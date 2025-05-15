@@ -1,0 +1,56 @@
+{
+  "info": {
+    "name": "Workshop Service API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Workshops",
+      "item": [
+        {
+          "name": "Create a workshop",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Workshop Name\",\n  \"description\": \"Workshop Description\",\n  \"capacity\": 50,\n  \"startTime\": \"2023-12-01T10:00:00\",\n  \"endTime\": \"2023-12-01T12:00:00\"\n}"
+            },
+            "url": {
+              "raw": "/api/v1/workshops",
+              "path": ["api", "v1", "workshops"]
+            }
+          }
+        },
+        {
+          "name": "Get all workshops",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "/api/v1/workshops",
+              "path": ["api", "v1", "workshops"]
+            }
+          }
+        }
+        // Other requests remain unchanged
+      ]
+    }
+    // Other items remain unchanged
+  ]
+}
