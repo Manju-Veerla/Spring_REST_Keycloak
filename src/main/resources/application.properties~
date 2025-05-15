@@ -1,0 +1,11 @@
+spring.application.name=workshop-service
+# Database Configuration
+spring.datasource.url=jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/workshop_db
+spring.datasource.username=unite
+spring.datasource.password=unite
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.hibernate.show-sql=true
+spring.jpa.hibernate.ddl-auto=update
+
+spring.security.oauth2.resourceserver.jwt.issuer-uri: http://localhost:8081/realms/API-Realm
+spring.security.oauth2.resourceserver.jwt.jwk-set-uri: http://localhost:8081/realms/API-Realm/protocol/openid-connect/certs
