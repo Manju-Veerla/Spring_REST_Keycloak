@@ -1,0 +1,128 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Workshop Service API"
+paths:
+  /api/v1/workshops:
+    post:
+      summary: "Create a workshop"
+      parameters:
+        - in: body
+          name: workshop
+          description: "Workshop object to create"
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              capacity:
+                type: integer
+              startTime:
+                type: string
+                format: date-time
+              endTime:
+                type: string
+                format: date-time
+      responses:
+        "201":
+          description: "Workshop created"
+    get:
+      summary: "Get all workshops"
+      responses:
+        "200":
+          description: "List of workshops"
+  /api/v1/workshops/{workshopCode}:
+    get:
+      summary: "Get a workshop by code"
+      parameters:
+        - in: path
+          name: workshopCode
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "Workshop details"
+        "404":
+          description: "Workshop not found"
+    delete:
+      summary: "Delete a workshop"
+      parameters:
+        - in: path
+          name: workshopCode
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "Workshop deleted"
+    put:
+      summary: "Update a workshop"
+      parameters:
+        - in: path
+          name: workshopCode
+          required: true
+          type: string
+        - in: body
+          name: workshop
+          description: "Updated workshop object"
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              capacity:
+                type: integer
+              startTime:
+                type: string
+                format: date-time
+              endTime:
+                type: string
+                format: date-time
+      responses:
+        "200":
+          description: "Workshop updated"
+  /api/v1/registrations:
+    post:
+      summary: "Create a registration"
+      parameters:
+        - in: body
+          name: registration
+          description: "Registration object to create"
+          required: true
+          schema:
+            type: object
+            properties:
+              workshopCode:
+                type: string
+              userName:
+                type: string
+              userEmail:
+                type: string
+              userPhone:
+                type: string
+              userPreferredContact:
+                type: string
+      responses:
+        "201":
+          description: "Registration created"
+    get:
+      summary: "Get all registrations"
+      responses:
+        "200":
+          description: "List of registrations"
+  /api/v1/registrations/{workshopCode}:
+    get:
+      summary: "Get registrations by workshop code"
+      parameters:
+        - in: path
+          name: workshopCode
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "List of registrations"
