@@ -12,14 +12,20 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Converts a JWT token into an {@link AbstractAuthenticationToken}.
+ */
 @Component
 @Slf4j
 public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationToken> {
-
+    // The default JwtGrantedAuthoritiesConverter used to extract authorities from the JWT
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
 
     public JwtAuthConverter() {
@@ -34,13 +40,13 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
      * @param jwt the JWT token to convert
      * @return an {@link AbstractAuthenticationToken} representing the JWT
      */
-     @Override
+    @Override
     public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
         log.info("Converting JWT to Authentication Token and adding roles...");
         final Set<GrantedAuthority> authorities = Stream.concat(
                 jwtGrantedAuthoritiesConverter.convert(jwt).stream(),
                 extractUserRoles(jwt).stream()).collect(Collectors.toSet());
-         log.info("Authorities: {}", authorities);
+        log.info("Authorities: {}", authorities);
         return new JwtAuthenticationToken(jwt, authorities);
     }
 
@@ -61,4 +67,4 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
         return Collections.emptySet();
     }
 
- }
+}

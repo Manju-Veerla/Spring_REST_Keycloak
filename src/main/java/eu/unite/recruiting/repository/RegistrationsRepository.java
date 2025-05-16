@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface RegistrationsRepository extends JpaRepository<Registrations, Integer> {
@@ -17,4 +16,6 @@ public interface RegistrationsRepository extends JpaRepository<Registrations, In
     boolean existsByWorkshopCodeAndUserName(@NotBlank(message = "Code cannot be empty") @Size(min = 5, max = 15, message = "Code of workshop must be of size 5-15") String workshopCode, String email);
 
     List<Registrations> findByUserName(String userName);
+
+    int countByWorkshopCode(String code);
 }

@@ -3,7 +3,6 @@ package eu.unite.recruiting.model.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 /**
  * Represents a custom error response named {@link CustomError} structure for REST APIs.

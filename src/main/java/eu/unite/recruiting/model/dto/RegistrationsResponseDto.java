@@ -1,7 +1,5 @@
 package eu.unite.recruiting.model.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
@@ -13,6 +11,6 @@ public class RegistrationsResponseDto {
 
     private String userPhone;
 
-    private String userPreferredContact ;
+    private String userPreferredContact;
 
 }
