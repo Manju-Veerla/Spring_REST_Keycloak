@@ -10,6 +10,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * Global exception handler class for handling exceptions thrown by the application.
+ */
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -23,6 +26,17 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(customErrorResponse, HttpStatus.BAD_REQUEST);
+
+    }
+
+    @ExceptionHandler(WorkshopNotFoundException.class)
+    public ResponseEntity<CustomError> handleWorkshopNotFoundException(WorkshopNotFoundException ex) {
+        CustomError customErrorResponse = CustomError.builder()
+                .header("WorkshopNotFound")
+                .message(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(customErrorResponse, HttpStatus.NOT_FOUND);
 
     }
 
@@ -49,7 +63,7 @@ public class GlobalExceptionHandler {
                 .header("User doesnot exist")
                 .message(ex.getMessage())
                 .build();
-        return new ResponseEntity<>(customError, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(customError, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(UserAlreadyRegisteredException.class)
@@ -71,6 +85,7 @@ public class GlobalExceptionHandler {
                 .build();
         return new ResponseEntity<>(customError, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(RegistrationDoesnotExistException.class)
     public ResponseEntity<?> handleRegistrationDoesnotExistException(RegistrationDoesnotExistException ex) {
         LOGGER.error("Registration data not available : {}", ex);
@@ -78,7 +93,7 @@ public class GlobalExceptionHandler {
                 .header("Registration data not available")
                 .message(ex.getMessage())
                 .build();
-        return new ResponseEntity<>(customError, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(customError, HttpStatus.NOT_FOUND);
     }
 
 }
