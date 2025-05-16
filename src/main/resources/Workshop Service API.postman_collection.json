@@ -1,0 +1,1645 @@
+{
+	"info": {
+		"_postman_id": "df27a369-9896-43ca-af8b-7a1dd1b4be8c",
+		"name": "Workshop Service API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15611576",
+		"_collection_link": "https://rest-practice-0784.postman.co/workspace/Rest-API~6d285596-1d63-47d0-9baf-6850784717b3/collection/15611576-df27a369-9896-43ca-af8b-7a1dd1b4be8c?action=share&source=collection_link&creator=15611576"
+	},
+	"item": [
+		{
+			"name": "api",
+			"item": [
+				{
+					"name": "v1",
+					"item": [
+						{
+							"name": "workshops",
+							"item": [
+								{
+									"name": "{workshopCode}",
+									"item": [
+										{
+											"name": "Get a workshop by code",
+											"request": {
+												"auth": {
+													"type": "oauth2",
+													"oauth2": [
+														{
+															"key": "grant_type",
+															"value": "password_credentials",
+															"type": "string"
+														},
+														{
+															"key": "scope",
+															"value": "",
+															"type": "string"
+														},
+														{
+															"key": "useBrowser",
+															"value": true,
+															"type": "boolean"
+														},
+														{
+															"key": "clientSecret",
+															"value": "LIxDn2IK6KbdmstKTqeug8PmdB21EKLh",
+															"type": "string"
+														},
+														{
+															"key": "clientId",
+															"value": "workshop-service",
+															"type": "string"
+														},
+														{
+															"key": "redirect_uri",
+															"value": "http://localhost:8080/",
+															"type": "string"
+														},
+														{
+															"key": "authUrl",
+															"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/token",
+															"type": "string"
+														},
+														{
+															"key": "accessTokenUrl",
+															"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/token",
+															"type": "string"
+														},
+														{
+															"key": "tokenName",
+															"value": "AdminToken",
+															"type": "string"
+														},
+														{
+															"key": "addTokenTo",
+															"value": "header",
+															"type": "string"
+														},
+														{
+															"key": "client_authentication",
+															"value": "body",
+															"type": "string"
+														},
+														{
+															"key": "password",
+															"value": "admin_user",
+															"type": "string"
+														},
+														{
+															"key": "username",
+															"value": "admin_user",
+															"type": "string"
+														}
+													]
+												},
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/workshops/:workshopCode",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"workshops",
+														":workshopCode"
+													],
+													"variable": [
+														{
+															"key": "workshopCode",
+															"value": "WS_200",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "Workshop details",
+													"originalRequest": {
+														"method": "GET",
+														"header": [],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/workshops/:workshopCode",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"workshops",
+																":workshopCode"
+															],
+															"variable": [
+																{
+																	"key": "workshopCode"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												},
+												{
+													"name": "Workshop not found",
+													"originalRequest": {
+														"method": "GET",
+														"header": [],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/workshops/:workshopCode",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"workshops",
+																":workshopCode"
+															],
+															"variable": [
+																{
+																	"key": "workshopCode"
+																}
+															]
+														}
+													},
+													"status": "Not Found",
+													"code": 404,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										},
+										{
+											"name": "Delete a workshop",
+											"request": {
+												"auth": {
+													"type": "oauth2",
+													"oauth2": [
+														{
+															"key": "client_authentication",
+															"value": "body",
+															"type": "string"
+														},
+														{
+															"key": "password",
+															"value": "admin_user",
+															"type": "string"
+														},
+														{
+															"key": "username",
+															"value": "admin_user",
+															"type": "string"
+														},
+														{
+															"key": "grant_type",
+															"value": "password_credentials",
+															"type": "string"
+														},
+														{
+															"key": "authUrl",
+															"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/auth",
+															"type": "string"
+														},
+														{
+															"key": "scope",
+															"value": "",
+															"type": "string"
+														},
+														{
+															"key": "useBrowser",
+															"value": true,
+															"type": "boolean"
+														},
+														{
+															"key": "clientSecret",
+															"value": "LIxDn2IK6KbdmstKTqeug8PmdB21EKLh",
+															"type": "string"
+														},
+														{
+															"key": "clientId",
+															"value": "workshop-service",
+															"type": "string"
+														},
+														{
+															"key": "redirect_uri",
+															"value": "http://localhost:8080/",
+															"type": "string"
+														},
+														{
+															"key": "accessTokenUrl",
+															"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/token",
+															"type": "string"
+														},
+														{
+															"key": "tokenName",
+															"value": "AdminToken",
+															"type": "string"
+														},
+														{
+															"key": "addTokenTo",
+															"value": "header",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/workshops/:workshopCode",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"workshops",
+														":workshopCode"
+													],
+													"variable": [
+														{
+															"key": "workshopCode",
+															"value": "WS_300",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "Workshop deleted",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/workshops/:workshopCode",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"workshops",
+																":workshopCode"
+															],
+															"variable": [
+																{
+																	"key": "workshopCode"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										},
+										{
+											"name": "Update a workshop",
+											"request": {
+												"auth": {
+													"type": "oauth2",
+													"oauth2": [
+														{
+															"key": "password",
+															"value": "test_user",
+															"type": "string"
+														},
+														{
+															"key": "username",
+															"value": "test_user",
+															"type": "string"
+														},
+														{
+															"key": "tokenName",
+															"value": "UserToken",
+															"type": "string"
+														},
+														{
+															"key": "client_authentication",
+															"value": "body",
+															"type": "string"
+														},
+														{
+															"key": "grant_type",
+															"value": "password_credentials",
+															"type": "string"
+														},
+														{
+															"key": "authUrl",
+															"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/auth",
+															"type": "string"
+														},
+														{
+															"key": "scope",
+															"value": "",
+															"type": "string"
+														},
+														{
+															"key": "useBrowser",
+															"value": true,
+															"type": "boolean"
+														},
+														{
+															"key": "clientSecret",
+															"value": "LIxDn2IK6KbdmstKTqeug8PmdB21EKLh",
+															"type": "string"
+														},
+														{
+															"key": "clientId",
+															"value": "workshop-service",
+															"type": "string"
+														},
+														{
+															"key": "redirect_uri",
+															"value": "http://localhost:8080/",
+															"type": "string"
+														},
+														{
+															"key": "accessTokenUrl",
+															"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/token",
+															"type": "string"
+														},
+														{
+															"key": "addTokenTo",
+															"value": "header",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n \"name\" : \"Changing name ABCDEF\",\n \"description\":\"Changing A meet up about the latest event\",\n \"capacity\":0\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/workshops/:workshopCode",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"workshops",
+														":workshopCode"
+													],
+													"variable": [
+														{
+															"key": "workshopCode",
+															"value": "WS_500",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "Workshop updated",
+													"originalRequest": {
+														"method": "PUT",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n  \"name\": \"ullamco tempor ea\",\n  \"description\": \"ipsu\",\n  \"capacity\": 51427408,\n  \"startTime\": \"1961-10-21T09:18:23.169Z\",\n  \"endTime\": \"2003-04-09T20:15:16.802Z\"\n}",
+															"options": {
+																"raw": {
+																	"headerFamily": "json",
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/workshops/:workshopCode",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"workshops",
+																":workshopCode"
+															],
+															"variable": [
+																{
+																	"key": "workshopCode"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "Create a workshop",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Response status code is 403\", function () {\r",
+													"  pm.expect(pm.response.code).to.equal(403);\r",
+													"});\r",
+													"\r",
+													"\r",
+													"pm.test(\"Response has the required fields\", function () {\r",
+													"    const responseData = pm.response.json();\r",
+													"    \r",
+													"    pm.expect(responseData).to.be.an('object');\r",
+													"    pm.expect(responseData.error).to.exist;\r",
+													"});\r",
+													"\r",
+													"\r",
+													"pm.test(\"Error message is a non-empty string\", function () {\r",
+													"    const responseData = pm.response.json();\r",
+													"    \r",
+													"    pm.expect(responseData).to.be.an('object');\r",
+													"    pm.expect(responseData.error).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Error message should not be empty\");\r",
+													"});\r",
+													"\r",
+													"\r",
+													"pm.test(\"Validate the response schema for the error message\", function () {\r",
+													"    const responseData = pm.response.json();\r",
+													"\r",
+													"    pm.expect(responseData).to.be.an('object');\r",
+													"    pm.expect(responseData.error).to.be.a('string');\r",
+													"});\r",
+													"\r",
+													"\r",
+													"pm.test(\"Response time is less than 300ms\", function () {\r",
+													"  pm.expect(pm.response.responseTime).to.be.below(300);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response has the specific header 'Content-Type'\", function () {\r",
+													"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.exist;\r",
+													"});\r",
+													"\r",
+													"\r",
+													"pm.test(\"Validate the format of the Content-Type header\", function () {\r",
+													"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+													"});\r",
+													"\r",
+													"\r",
+													"pm.test(\"Error message is a non-empty string\", function () {\r",
+													"  const responseData = pm.response.json();\r",
+													"  \r",
+													"  pm.expect(responseData.error).to.be.a('string').and.to.have.length.at.least(1);\r",
+													"});\r",
+													"\r",
+													"\r",
+													"pm.test(\"Error message is present in the response\", function () {\r",
+													"  const responseData = pm.response.json();\r",
+													"  \r",
+													"  pm.expect(responseData).to.be.an('object');\r",
+													"  pm.expect(responseData.error).to.exist.and.to.be.a('string');\r",
+													"});\r",
+													"\r",
+													"\r",
+													"pm.test(\"Response time is less than 300ms\", function () {\r",
+													"  pm.expect(pm.response.responseTime).to.be.below(300);\r",
+													"});\r",
+													"\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "oauth2",
+											"oauth2": [
+												{
+													"key": "tokenName",
+													"value": "UserToken",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "user_123",
+													"type": "string"
+												},
+												{
+													"key": "username",
+													"value": "user_123",
+													"type": "string"
+												},
+												{
+													"key": "grant_type",
+													"value": "password_credentials",
+													"type": "string"
+												},
+												{
+													"key": "scope",
+													"value": "",
+													"type": "string"
+												},
+												{
+													"key": "useBrowser",
+													"value": true,
+													"type": "boolean"
+												},
+												{
+													"key": "clientSecret",
+													"value": "LIxDn2IK6KbdmstKTqeug8PmdB21EKLh",
+													"type": "string"
+												},
+												{
+													"key": "clientId",
+													"value": "workshop-service",
+													"type": "string"
+												},
+												{
+													"key": "redirect_uri",
+													"value": "http://localhost:8080/",
+													"type": "string"
+												},
+												{
+													"key": "authUrl",
+													"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/token",
+													"type": "string"
+												},
+												{
+													"key": "accessTokenUrl",
+													"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/token",
+													"type": "string"
+												},
+												{
+													"key": "addTokenTo",
+													"value": "header",
+													"type": "string"
+												},
+												{
+													"key": "client_authentication",
+													"value": "body",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"code\": \"WS_200\",\n  \"name\": \"Tech catchUp 2025\",\n  \"description\": \"A meet up about the Tech events\",\n  \"startTime\": \"2025-06-11T09:00:00Z\",\n  \"endTime\": \"2025-06-21T17:00:00Z\",\n  \"capacity\": 3\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/v1/workshops",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"workshops"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Workshop created",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"name\": \"ullamco tempor ea\",\n  \"description\": \"ipsu\",\n  \"capacity\": 51427408,\n  \"startTime\": \"1961-10-21T09:18:23.169Z\",\n  \"endTime\": \"2003-04-09T20:15:16.802Z\"\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/workshops",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"workshops"
+													]
+												}
+											},
+											"status": "Created",
+											"code": 201,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								},
+								{
+									"name": "Get all workshops",
+									"request": {
+										"auth": {
+											"type": "oauth2",
+											"oauth2": [
+												{
+													"key": "password",
+													"value": "test_user",
+													"type": "string"
+												},
+												{
+													"key": "username",
+													"value": "test_user",
+													"type": "string"
+												},
+												{
+													"key": "tokenName",
+													"value": "UserToken",
+													"type": "string"
+												},
+												{
+													"key": "client_authentication",
+													"value": "body",
+													"type": "string"
+												},
+												{
+													"key": "grant_type",
+													"value": "password_credentials",
+													"type": "string"
+												},
+												{
+													"key": "authUrl",
+													"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/auth",
+													"type": "string"
+												},
+												{
+													"key": "scope",
+													"value": "",
+													"type": "string"
+												},
+												{
+													"key": "useBrowser",
+													"value": true,
+													"type": "boolean"
+												},
+												{
+													"key": "clientSecret",
+													"value": "LIxDn2IK6KbdmstKTqeug8PmdB21EKLh",
+													"type": "string"
+												},
+												{
+													"key": "clientId",
+													"value": "workshop-service",
+													"type": "string"
+												},
+												{
+													"key": "redirect_uri",
+													"value": "http://localhost:8080/",
+													"type": "string"
+												},
+												{
+													"key": "accessTokenUrl",
+													"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/token",
+													"type": "string"
+												},
+												{
+													"key": "addTokenTo",
+													"value": "header",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/v1/workshops",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"workshops"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "List of workshops",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/workshops",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"workshops"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								},
+								{
+									"name": "Get upcoming workshops",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Response status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"\r",
+													"pm.test(\"Response time is less than 200ms\", function () {\r",
+													"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+													"});\r",
+													"\r",
+													"\r",
+													"pm.test(\"Validate the response schema for required fields\", function () {\r",
+													"    const responseData = pm.response.json();\r",
+													"    \r",
+													"    pm.expect(responseData).to.be.an('array');\r",
+													"    responseData.forEach(function(workshop) {\r",
+													"        pm.expect(workshop).to.have.property('code');\r",
+													"        pm.expect(workshop).to.have.property('name');\r",
+													"        pm.expect(workshop).to.have.property('description');\r",
+													"        pm.expect(workshop).to.have.property('startTime');\r",
+													"        pm.expect(workshop).to.have.property('endTime');\r",
+													"        pm.expect(workshop).to.have.property('capacity');\r",
+													"    });\r",
+													"});\r",
+													"\r",
+													"\r",
+													"pm.test(\"Start time and end time are in valid date/time format\", function () {\r",
+													"    const responseData = pm.response.json();\r",
+													"    \r",
+													"    responseData.forEach(function(workshop) {\r",
+													"        pm.expect(workshop.startTime).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$/);\r",
+													"        pm.expect(workshop.endTime).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$/);\r",
+													"    });\r",
+													"});\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/v1/workshops/upcoming",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"workshops",
+												"upcoming"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "List of workshops",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/workshops",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"workshops"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "registrations",
+							"item": [
+								{
+									"name": "{workshopCode}",
+									"item": [
+										{
+											"name": "Get registrations by workshop code",
+											"request": {
+												"auth": {
+													"type": "oauth2",
+													"oauth2": [
+														{
+															"key": "tokenName",
+															"value": "UserToken",
+															"type": "string"
+														},
+														{
+															"key": "password",
+															"value": "user_123",
+															"type": "string"
+														},
+														{
+															"key": "username",
+															"value": "user_123",
+															"type": "string"
+														},
+														{
+															"key": "grant_type",
+															"value": "password_credentials",
+															"type": "string"
+														},
+														{
+															"key": "scope",
+															"value": "",
+															"type": "string"
+														},
+														{
+															"key": "useBrowser",
+															"value": true,
+															"type": "boolean"
+														},
+														{
+															"key": "clientSecret",
+															"value": "LIxDn2IK6KbdmstKTqeug8PmdB21EKLh",
+															"type": "string"
+														},
+														{
+															"key": "clientId",
+															"value": "workshop-service",
+															"type": "string"
+														},
+														{
+															"key": "redirect_uri",
+															"value": "http://localhost:8080/",
+															"type": "string"
+														},
+														{
+															"key": "authUrl",
+															"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/token",
+															"type": "string"
+														},
+														{
+															"key": "accessTokenUrl",
+															"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/token",
+															"type": "string"
+														},
+														{
+															"key": "addTokenTo",
+															"value": "header",
+															"type": "string"
+														},
+														{
+															"key": "client_authentication",
+															"value": "body",
+															"type": "string"
+														}
+													]
+												},
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/registrations/:workshopCode",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"registrations",
+														":workshopCode"
+													],
+													"variable": [
+														{
+															"key": "workshopCode",
+															"value": "WS_300",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "List of registrations",
+													"originalRequest": {
+														"method": "GET",
+														"header": [],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/registrations/:workshopCode",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"registrations",
+																":workshopCode"
+															],
+															"variable": [
+																{
+																	"key": "workshopCode"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "Delete a registration",
+											"request": {
+												"auth": {
+													"type": "oauth2",
+													"oauth2": [
+														{
+															"key": "client_authentication",
+															"value": "body",
+															"type": "string"
+														},
+														{
+															"key": "password",
+															"value": "admin_user",
+															"type": "string"
+														},
+														{
+															"key": "username",
+															"value": "admin_user",
+															"type": "string"
+														},
+														{
+															"key": "grant_type",
+															"value": "password_credentials",
+															"type": "string"
+														},
+														{
+															"key": "authUrl",
+															"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/auth",
+															"type": "string"
+														},
+														{
+															"key": "scope",
+															"value": "",
+															"type": "string"
+														},
+														{
+															"key": "useBrowser",
+															"value": true,
+															"type": "boolean"
+														},
+														{
+															"key": "clientSecret",
+															"value": "LIxDn2IK6KbdmstKTqeug8PmdB21EKLh",
+															"type": "string"
+														},
+														{
+															"key": "clientId",
+															"value": "workshop-service",
+															"type": "string"
+														},
+														{
+															"key": "redirect_uri",
+															"value": "http://localhost:8080/",
+															"type": "string"
+														},
+														{
+															"key": "accessTokenUrl",
+															"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/token",
+															"type": "string"
+														},
+														{
+															"key": "tokenName",
+															"value": "AdminToken",
+															"type": "string"
+														},
+														{
+															"key": "addTokenTo",
+															"value": "header",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/registrations/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"registrations",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "2"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "Workshop deleted",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/workshops/:workshopCode",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"workshops",
+																":workshopCode"
+															],
+															"variable": [
+																{
+																	"key": "workshopCode"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "Create a registration",
+									"request": {
+										"auth": {
+											"type": "oauth2",
+											"oauth2": [
+												{
+													"key": "tokenName",
+													"value": "test_3_new",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "test_3",
+													"type": "string"
+												},
+												{
+													"key": "username",
+													"value": "test_3",
+													"type": "string"
+												},
+												{
+													"key": "client_authentication",
+													"value": "body",
+													"type": "string"
+												},
+												{
+													"key": "grant_type",
+													"value": "password_credentials",
+													"type": "string"
+												},
+												{
+													"key": "authUrl",
+													"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/auth",
+													"type": "string"
+												},
+												{
+													"key": "scope",
+													"value": "",
+													"type": "string"
+												},
+												{
+													"key": "useBrowser",
+													"value": true,
+													"type": "boolean"
+												},
+												{
+													"key": "clientSecret",
+													"value": "LIxDn2IK6KbdmstKTqeug8PmdB21EKLh",
+													"type": "string"
+												},
+												{
+													"key": "clientId",
+													"value": "workshop-service",
+													"type": "string"
+												},
+												{
+													"key": "redirect_uri",
+													"value": "http://localhost:8080/",
+													"type": "string"
+												},
+												{
+													"key": "accessTokenUrl",
+													"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/token",
+													"type": "string"
+												},
+												{
+													"key": "addTokenTo",
+													"value": "header",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"workshopCode\": \"WS_100\",\n  \"userPhone\": \"+49123456789\",\n  \"userPreferredContact\": \"Mobile\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/v1/registrations",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"registrations"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Registration created",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"workshopCode\": \"WS_200\",\n  \"userPhone\": \"+49123456789\",\n  \"userPreferredContact\": \"Mobile\"\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/registrations",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"registrations"
+													]
+												}
+											},
+											"status": "Created",
+											"code": 201,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								},
+								{
+									"name": "Get all registrations",
+									"request": {
+										"auth": {
+											"type": "oauth2",
+											"oauth2": [
+												{
+													"key": "tokenName",
+													"value": "AdminToken_1",
+													"type": "string"
+												},
+												{
+													"key": "client_authentication",
+													"value": "body",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "admin_user",
+													"type": "string"
+												},
+												{
+													"key": "username",
+													"value": "admin_user",
+													"type": "string"
+												},
+												{
+													"key": "grant_type",
+													"value": "password_credentials",
+													"type": "string"
+												},
+												{
+													"key": "authUrl",
+													"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/auth",
+													"type": "string"
+												},
+												{
+													"key": "scope",
+													"value": "",
+													"type": "string"
+												},
+												{
+													"key": "useBrowser",
+													"value": true,
+													"type": "boolean"
+												},
+												{
+													"key": "clientSecret",
+													"value": "LIxDn2IK6KbdmstKTqeug8PmdB21EKLh",
+													"type": "string"
+												},
+												{
+													"key": "clientId",
+													"value": "workshop-service",
+													"type": "string"
+												},
+												{
+													"key": "redirect_uri",
+													"value": "http://localhost:8080/",
+													"type": "string"
+												},
+												{
+													"key": "accessTokenUrl",
+													"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/token",
+													"type": "string"
+												},
+												{
+													"key": "addTokenTo",
+													"value": "header",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/v1/registrations",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"registrations"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "List of registrations",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/registrations",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"registrations"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								},
+								{
+									"name": "Get user registrations",
+									"request": {
+										"auth": {
+											"type": "oauth2",
+											"oauth2": [
+												{
+													"key": "tokenName",
+													"value": "AdminToken_1",
+													"type": "string"
+												},
+												{
+													"key": "client_authentication",
+													"value": "body",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "admin_user",
+													"type": "string"
+												},
+												{
+													"key": "username",
+													"value": "admin_user",
+													"type": "string"
+												},
+												{
+													"key": "grant_type",
+													"value": "password_credentials",
+													"type": "string"
+												},
+												{
+													"key": "authUrl",
+													"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/auth",
+													"type": "string"
+												},
+												{
+													"key": "scope",
+													"value": "",
+													"type": "string"
+												},
+												{
+													"key": "useBrowser",
+													"value": true,
+													"type": "boolean"
+												},
+												{
+													"key": "clientSecret",
+													"value": "LIxDn2IK6KbdmstKTqeug8PmdB21EKLh",
+													"type": "string"
+												},
+												{
+													"key": "clientId",
+													"value": "workshop-service",
+													"type": "string"
+												},
+												{
+													"key": "redirect_uri",
+													"value": "http://localhost:8080/",
+													"type": "string"
+												},
+												{
+													"key": "accessTokenUrl",
+													"value": "http://localhost:8081/realms/workshop/protocol/openid-connect/token",
+													"type": "string"
+												},
+												{
+													"key": "addTokenTo",
+													"value": "header",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/v1/user/registrations",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"user",
+												"registrations"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "List of registrations",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/user/registrations",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"user",
+														"registrations"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Keycloak token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json()\r",
+							"pm.collectionVariables.set(\"token\",jsonData.access_token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "admin_user",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "admin_user",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "workshop-service",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "LIxDn2IK6KbdmstKTqeug8PmdB21EKLh",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8081/realms/workshop/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"realms",
+						"workshop",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}

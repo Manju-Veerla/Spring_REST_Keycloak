@@ -1,6 +1,7 @@
 package eu.unite.recruiting.config;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -9,13 +10,23 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @AllArgsConstructor
 public class SecurityConfig {
+
+    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
+    private String jwkSetUri;
     /**
      * URLS that can be accessed without any authentication.
      */
@@ -43,10 +54,12 @@ public class SecurityConfig {
                     auth.requestMatchers(WHITELIST_URLS).permitAll()
                             .anyRequest().authenticated(); // Authenticate any other request
                 })
+
                 .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(jwt ->
-                                        jwt.jwtAuthenticationConverter(jwtAuthConverter))
-                                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
+                       oauth2.jwt(jwt ->{
+                                   jwt.decoder(jwtDecoder());
+                            jwt.jwtAuthenticationConverter(jwtAuthConverter);
+                        }).authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception ->
@@ -55,5 +68,16 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
+    }
+
+    private JwtDecoder jwtDecoder() {
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
+        // Only validate timestamps (exp, nbf), skip issuer validation
+        OAuth2TokenValidator<Jwt> validator = new DelegatingOAuth2TokenValidator<>(
+                new JwtTimestampValidator()
+        );
+        jwtDecoder.setJwtValidator(validator);
+
+        return jwtDecoder;
     }
 }
