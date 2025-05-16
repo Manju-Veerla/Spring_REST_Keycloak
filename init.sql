@@ -1,3 +1,6 @@
+CREATE SEQUENCE registrations_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE workshops_seq START WITH 1 INCREMENT BY 1;
+
 CREATE TABLE IF NOT EXISTS registrations
 (
    id integer NOT NULL DEFAULT nextval('registrations_seq'),
@@ -23,8 +26,6 @@ CREATE TABLE IF NOT EXISTS workshops
     CONSTRAINT workshops_code_key UNIQUE (code)
 );
 
-CREATE SEQUENCE registrations_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE workshops_seq START WITH 1 INCREMENT BY 1;
 
 INSERT INTO workshops (capacity,id,end_time,start_time,code,description,"name") VALUES
 	 (3,1,'2025-04-21 19:00:00+02','2025-04-11 11:00:00+02','WS2025','A meet up about the 2025','Catchup 2025'),

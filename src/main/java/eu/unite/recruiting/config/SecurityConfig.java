@@ -1,6 +1,6 @@
 package eu.unite.recruiting.config;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,12 +17,11 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
@@ -44,7 +43,7 @@ public class SecurityConfig {
      *
      * @param http the HttpSecurity object to configure
      * @return the configured SecurityFilterChain
-     * @throws Exception
+     * @throws Exception if an error occurs during configuration
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -70,7 +69,8 @@ public class SecurityConfig {
         return http.build();
     }
 
-    private JwtDecoder jwtDecoder() {
+    @Bean
+    public JwtDecoder jwtDecoder() {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
         // Only validate timestamps (exp, nbf), skip issuer validation
         OAuth2TokenValidator<Jwt> validator = new DelegatingOAuth2TokenValidator<>(

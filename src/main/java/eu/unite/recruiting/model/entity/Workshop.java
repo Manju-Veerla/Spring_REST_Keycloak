@@ -9,7 +9,13 @@ import java.time.ZonedDateTime;
 @Table(name = "workshops")
 @Data
 public class Workshop {
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(
+            name = "workshops_seq",
+            sequenceName = "workshops_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "workshops_seq")
+
     @Id
     @Column(name = "id")
     private Integer id;
