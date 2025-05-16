@@ -12,7 +12,7 @@ public class Registrations {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "workshop_code", nullable = false, unique = true)
+    @Column(name = "workshop_code", nullable = false)
     private String workshopCode;
 
     @Column(name = "user_name", nullable = false)
@@ -25,6 +25,6 @@ public class Registrations {
     private String userPhone;
 
     @Column(name = "user_preferred_contact ")
-    private String userPreferredContact ;
+    private String userPreferredContact;
 
 }

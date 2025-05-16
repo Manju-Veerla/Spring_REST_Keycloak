@@ -4,7 +4,6 @@ import eu.unite.recruiting.model.dto.RegistrationsDto;
 import eu.unite.recruiting.model.dto.RegistrationsResponseDto;
 import eu.unite.recruiting.model.entity.Registrations;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 /**
  * Maps between Registrations entities and RegistrationsDto.
