@@ -156,6 +156,7 @@ public class WorkshopService {
      * @return the updated workshop
      */
     private WorkshopDto updateData(Workshop workshop, WorkshopUpdateDto workshopDto) {
+        log.info("Updating workshop with code {}", workshop.getCode());
         if (StringUtils.isNotBlank(workshopDto.getName())) {
             workshop.setName(workshopDto.getName());
         }
