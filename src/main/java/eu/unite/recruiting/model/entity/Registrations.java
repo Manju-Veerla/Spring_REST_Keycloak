@@ -7,7 +7,12 @@ import lombok.Data;
 @Table(name = "registrations")
 @Data
 public class Registrations {
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(
+            name = "registrations_seq",
+            sequenceName = "registrations_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "registrations_seq")
     @Id
     @Column(name = "id")
     private Integer id;
