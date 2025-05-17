@@ -1,6 +1,6 @@
 services:
   workshop-service:
-    image: workshop-service
+    image: workshop
     build: .
     ports:
       - "8080:8080"
