@@ -1,0 +1,59 @@
+services:
+  workshop-service:
+    image: workshop-service
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/workshop_db
+      - SPRING_DATASOURCE_USERNAME=unite
+      - SPRING_DATASOURCE_PASSWORD=unite
+    depends_on:
+      - db
+      - keycloak
+    networks:
+        - workshopservicesnetwork
+
+  db:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: workshop_db
+      POSTGRES_USER: unite
+      POSTGRES_PASSWORD: unite
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+        - workshopservicesnetwork
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:latest
+    ports:
+      - "8081:8080"
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+      - KC_HOSTNAME=localhost
+      - KC_HOSTNAME_PORT=8081
+      - DB_VENDOR=POSTGRES
+      - DB_ADDR=db
+      - DB_DATABASE=keycloak
+      - DB_USER=keycloak
+      - DB_PASSWORD=keycloak
+      - KEYCLOAK_REALM=workshop
+    command:
+      - start-dev
+      - --import-realm
+    volumes:
+        - ./docker/keycloak/realms/:/opt/keycloak/data/import/
+    depends_on:
+      - db
+    networks:
+        - workshopservicesnetwork
+networks:
+  workshopservicesnetwork:
+    driver: bridge
