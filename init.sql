@@ -1,21 +1,21 @@
-CREATE SEQUENCE registrations_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE workshops_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE IF NOT EXISTS registrations_id_seq START 1 INCREMENT 1;
+CREATE SEQUENCE IF NOT EXISTS workshops_id_seq START 1 INCREMENT 1;
 
 CREATE TABLE IF NOT EXISTS registrations
 (
-   id integer NOT NULL DEFAULT nextval('registrations_seq'),
+   id SERIAL,
     user_email character varying(50) NOT NULL,
     user_name character varying(30)  NOT NULL,
     user_phone character varying(20) ,
     user_preferred_contact character varying(30) ,
     workshop_code character varying(15) NOT NULL,
-    CONSTRAINT registrations_id_pk PRIMARY KEY (id)
+     CONSTRAINT registrations_id_pk PRIMARY KEY (id)
 );
 
 
 CREATE TABLE IF NOT EXISTS workshops
 (
-    id integer NOT NULL DEFAULT nextval('workshops_seq'),
+    id SERIAL,
 	capacity integer NOT NULL,
     start_time timestamp(6) with time zone NOT NULL,
 	end_time timestamp(6) with time zone NOT NULL,
@@ -27,7 +27,9 @@ CREATE TABLE IF NOT EXISTS workshops
 );
 
 
-INSERT INTO workshops (capacity,id,end_time,start_time,code,description,"name") VALUES
-	 (3,1,'2025-04-21 19:00:00+02','2025-04-11 11:00:00+02','WS2025','A meet up about the 2025','Catchup 2025'),
-	 (3,2,'2025-06-21 19:00:00+02','2025-06-11 11:00:00+02','WS_100','A meet up about the Tech events','Tech catchUp 2025'),
-	 (5,3,'2025-07-21 19:00:00+02','2025-07-11 11:00:00+02','WS_200','Hackathon the 2025','Hackathon 2025');
+INSERT INTO workshops (capacity,end_time,start_time,code,description,"name") VALUES
+	 (3,'2025-04-21 19:00:00+02','2025-04-11 11:00:00+02','WS2025','A meet up about the 2025','Catchup 2025'),
+	 (3,'2025-06-21 19:00:00+02','2025-06-11 11:00:00+02','WS_100','A meet up about the Tech events','Tech catchUp 2025'),
+	 (5,'2025-07-21 19:00:00+02','2025-07-11 11:00:00+02','WS_200','Hackathon the 2025','Hackathon 2025');
+
+
