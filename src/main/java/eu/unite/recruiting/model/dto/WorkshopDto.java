@@ -1,10 +1,12 @@
 package eu.unite.recruiting.model.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Data;
 import java.time.ZonedDateTime;
 
 @Data
+@Builder
 public class WorkshopDto {
 
     @NotBlank(message = "Code cannot be empty")
