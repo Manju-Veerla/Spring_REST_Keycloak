@@ -26,9 +26,8 @@ public class SecurityConfig {
 
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     private String jwkSetUri;
-    /**
-     * URLS that can be accessed without any authentication.
-     */
+
+    // URLS that can be accessed without any authentication.
     private static final String[] WHITELIST_URLS = {"/api/v1/workshops/upcoming", "/h2-console",
             "/v3/api-docs/**",
             "/swagger-ui.html",
@@ -53,10 +52,9 @@ public class SecurityConfig {
                     auth.requestMatchers(WHITELIST_URLS).permitAll()
                             .anyRequest().authenticated(); // Authenticate any other request
                 })
-
                 .oauth2ResourceServer(oauth2 ->
-                       oauth2.jwt(jwt ->{
-                                   jwt.decoder(jwtDecoder());
+                        oauth2.jwt(jwt -> {
+                            jwt.decoder(jwtDecoder());
                             jwt.jwtAuthenticationConverter(jwtAuthConverter);
                         }).authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
                 .sessionManagement(session ->
@@ -69,6 +67,10 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Creates a JwtDecoder bean for decoding JWT tokens.
+     * @return the JwtDecoder bean
+     */
     @Bean
     public JwtDecoder jwtDecoder() {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
@@ -77,7 +79,6 @@ public class SecurityConfig {
                 new JwtTimestampValidator()
         );
         jwtDecoder.setJwtValidator(validator);
-
         return jwtDecoder;
     }
 }
