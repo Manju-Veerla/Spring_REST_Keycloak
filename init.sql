@@ -9,9 +9,10 @@ CREATE TABLE IF NOT EXISTS registrations
     user_phone character varying(20) ,
     user_preferred_contact character varying(30) ,
     workshop_code character varying(15) NOT NULL,
-     CONSTRAINT registrations_id_pk PRIMARY KEY (id)
+    CONSTRAINT registrations_id_pk PRIMARY KEY (id)
 );
 
+CREATE INDEX idx_workshop_code ON registrations(workshop_code);
 
 CREATE TABLE IF NOT EXISTS workshops
 (

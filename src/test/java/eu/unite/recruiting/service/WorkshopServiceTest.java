@@ -10,7 +10,6 @@ import eu.unite.recruiting.model.entity.Workshop;
 import eu.unite.recruiting.model.mapper.WorkshopMapper;
 import eu.unite.recruiting.repository.WorkshopRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import java.time.ZonedDateTime;
@@ -60,7 +59,6 @@ class WorkshopServiceTest {
     }
 
     @Test
-    @DisplayName("Should return only upcoming workshops")
     void getUpcomingWorkshops_returnsUpcoming() {
         Workshop pastWorkshop = new Workshop();
         pastWorkshop.setEndTime(ZonedDateTime.now().minusDays(1));
@@ -74,7 +72,6 @@ class WorkshopServiceTest {
     }
 
     @Test
-    @DisplayName("Should return all workshops")
     void getAllWorkshops_returnsAll() {
         when(workshopRepository.findAll()).thenReturn(List.of(workshop));
         when(workshopMapper.WorkshopToWorkshopDto(any())).thenReturn(workshopDto);
@@ -86,7 +83,6 @@ class WorkshopServiceTest {
     }
 
     @Test
-    @DisplayName("Should create a new workshop")
     void createWorkshop_success() {
         when(workshopRepository.existsWorkshopByCode("WS_200")).thenReturn(false);
         when(workshopMapper.WorkshopDtoToWorkshop(any())).thenReturn(workshop);
@@ -100,7 +96,6 @@ class WorkshopServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw if workshop code exists")
     void createWorkshop_alreadyExists() {
         when(workshopRepository.existsWorkshopByCode("WS_100")).thenReturn(true);
 
@@ -109,7 +104,6 @@ class WorkshopServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw if start time is after end time")
     void createWorkshop_invalidTimes() {
         workshopDto.setStartTime(ZonedDateTime.now().plusDays(2));
         workshopDto.setEndTime(ZonedDateTime.now().plusDays(1));
@@ -120,7 +114,6 @@ class WorkshopServiceTest {
     }
 
     @Test
-    @DisplayName("Should get workshop by code")
     void getWorkshopByCode_success() {
         when(workshopRepository.findByCode("WS_100")).thenReturn(Optional.of(workshop));
         when(workshopMapper.WorkshopToWorkshopDto(any())).thenReturn(workshopDto);
@@ -131,7 +124,6 @@ class WorkshopServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw if workshop not found by code")
     void getWorkshopByCode_notFound() {
         when(workshopRepository.findByCode("WS_100")).thenReturn(Optional.empty());
 
@@ -140,7 +132,6 @@ class WorkshopServiceTest {
     }
 
     @Test
-    @DisplayName("Should delete workshop if no registrations")
     void deleteWorkshop_success() {
         when(workshopRepository.findByCode("WS_100")).thenReturn(Optional.of(workshop));
         when(workshopRegistrationService.getRegistrationsByCode("WS_200")).thenReturn(Collections.emptyList());
@@ -151,7 +142,6 @@ class WorkshopServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw if deleting workshop with registrations")
     void deleteWorkshop_withRegistrations() {
         when(workshopRepository.findByCode("WS_200")).thenReturn(Optional.of(workshop));
         when(workshopRegistrationService.getRegistrationsByCode("WS_200")).
@@ -162,7 +152,6 @@ class WorkshopServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw if deleting non-existent workshop")
     void deleteWorkshop_notFound() {
         when(workshopRepository.findByCode("WS_1AA")).thenReturn(Optional.empty());
 
@@ -171,7 +160,6 @@ class WorkshopServiceTest {
     }
 
     @Test
-    @DisplayName("Should update workshop")
     void updateWorkshop_success() {
         when(workshopRepository.findByCode("WS_100")).thenReturn(Optional.of(workshop));
         when(workshopRepository.save(any())).thenReturn(workshop);
@@ -184,7 +172,6 @@ class WorkshopServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw if updating non-existent workshop")
     void updateWorkshop_notFound() {
         when(workshopRepository.findByCode("WS_1AA")).thenReturn(Optional.empty());
 
