@@ -6,7 +6,6 @@ import eu.unite.recruiting.model.dto.RegistrationsDto;
 import eu.unite.recruiting.model.dto.RegistrationsResponseDto;
 import eu.unite.recruiting.service.RegistrationService;
 import eu.unite.recruiting.service.WorkshopRegistrationService;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(RegistrationController.class)
 class RegistrationControllerTest {
 
+    public static final String REGISTRATIONS_ENDPOINT = "/api/v1/registrations";
+    public static final String WORKSHOP_CODE = "/WS_100";
+    public static final String USER_REGISTRATIONS_ENDPOINT = "/api/v1/user/registrations";
     @Autowired
     private MockMvc mockMvc;
 
@@ -44,48 +46,44 @@ class RegistrationControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    @DisplayName("Get all registrations as admin")
     void getRegistrations_returnsList() throws Exception {
         RegistrationsDto dto = TestData.createRegistrationDto();
         Mockito.when(registrationService.getAllRegistrations()).thenReturn(List.of(dto));
 
-        mockMvc.perform(get("/api/v1/registrations"))
+        mockMvc.perform(get(REGISTRATIONS_ENDPOINT))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    @DisplayName("Get registrations by workshop code - found")
     void getRegistrationsByWorkshopCode_found() throws Exception {
         RegistrationsDto dto = TestData.createRegistrationDto();
         Mockito.when(workshopRegistrationService.getRegistrationsByCode("WS_100")).thenReturn(List.of(dto));
 
-        mockMvc.perform(get("/api/v1/registrations/WS_100"))
+        mockMvc.perform(get(REGISTRATIONS_ENDPOINT + WORKSHOP_CODE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    @DisplayName("Get registrations by workshop code - not found")
     void getRegistrationsByWorkshopCode_notFound() throws Exception {
         Mockito.when(workshopRegistrationService.getRegistrationsByCode("WS2")).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/api/v1/registrations/WS2"))
+        mockMvc.perform(get(REGISTRATIONS_ENDPOINT +"/WS2"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("No registrations found for workshop code WS2")));
     }
 
     @Test
     @WithMockUser(roles = "USER")
-    @DisplayName("Create registration - success")
     void createRegistration_success() throws Exception {
         RegistrationsDto input = TestData.createRegistrationDto();
         RegistrationsDto saved = TestData.createRegistrationDto();
         Mockito.when(registrationService.createRegistration(any(RegistrationsDto.class), any(Authentication.class))).thenReturn(saved);
 
-        mockMvc.perform(post("/api/v1/registrations")
+        mockMvc.perform(post(REGISTRATIONS_ENDPOINT)
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(input)))
@@ -94,12 +92,11 @@ class RegistrationControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    @DisplayName("Create registration - failure")
     void createRegistration_failure() throws Exception {
         RegistrationsDto input = TestData.createRegistrationDto();
         Mockito.when(registrationService.createRegistration(any(RegistrationsDto.class), any(Authentication.class))).thenReturn(null);
 
-        mockMvc.perform(post("/api/v1/registrations")
+        mockMvc.perform(post(REGISTRATIONS_ENDPOINT)
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(input)))
@@ -108,9 +105,8 @@ class RegistrationControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    @DisplayName("Delete registration - success")
     void deleteRegistration_success() throws Exception {
-        mockMvc.perform(delete("/api/v1/registrations/1")
+        mockMvc.perform(delete(REGISTRATIONS_ENDPOINT+"/1")
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Registration deleted successfully :1")));
@@ -119,31 +115,28 @@ class RegistrationControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    @DisplayName("Get user registrations - found")
     void getUserRegistrations_found() throws Exception {
         RegistrationsResponseDto dto = TestData.createRegistrationResponseDto();
         Mockito.when(registrationService.getUserRegistrations(any(Authentication.class))).thenReturn(List.of(dto));
 
-        mockMvc.perform(get("/api/v1/user/registrations"))
+        mockMvc.perform(get(USER_REGISTRATIONS_ENDPOINT))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
     @WithMockUser(roles = "USER")
-    @DisplayName("Get user registrations - not found")
     void getUserRegistrations_notFound() throws Exception {
         Mockito.when(registrationService.getUserRegistrations(any(Authentication.class))).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/api/v1/user/registrations"))
+        mockMvc.perform(get(USER_REGISTRATIONS_ENDPOINT))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("User has not Registered for any workshop")));
     }
 
     @Test
-    @DisplayName("Get user registrations - unauthorized")
     void getUserRegistrations_unauthorized() throws Exception {
-        mockMvc.perform(get("/api/v1/user/registrations"))
+        mockMvc.perform(get(USER_REGISTRATIONS_ENDPOINT))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string(containsString("User is not authenticated")));
     }

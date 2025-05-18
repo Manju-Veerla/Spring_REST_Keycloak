@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * Global exception handler class for handling exceptions thrown by the application.
+ * al exception handler class for handling exceptions thrown by the application.
  */
 @RestControllerAdvice
 @Slf4j
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
                 .message(ex.getMessage())
                 .build();
 
-        return new ResponseEntity<>(customErrorResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(customErrorResponse, HttpStatus.OK);
 
     }
 
@@ -93,7 +93,7 @@ public class GlobalExceptionHandler {
                 .header("Registration data not available")
                 .message(ex.getMessage())
                 .build();
-        return new ResponseEntity<>(customError, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(customError, HttpStatus.OK);
     }
 
 }
