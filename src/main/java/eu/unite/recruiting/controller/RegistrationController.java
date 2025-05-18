@@ -105,7 +105,7 @@ public class RegistrationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User registration deleted successfully"),
             @ApiResponse(responseCode = "404", description = "User registration not found"),
-            @ApiResponse(responseCode = "400", description = "Invalid User registration id")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<String> deleteRegistration(@PathVariable Integer id) {
         log.info("Deleting registration with id  {} ", id);

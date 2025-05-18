@@ -102,7 +102,7 @@ public class WorkshopController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved workshop details",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = WorkshopDto.class))}),
-            @ApiResponse(responseCode = "404", description = "Invalid workshop code")
+            @ApiResponse(responseCode = "400", description = "Invalid workshop code")
     })
     public ResponseEntity<WorkshopDto> getWorkshop(@PathVariable String workshopCode) {
         log.info("Getting workshop with code  {} ", workshopCode);
@@ -111,7 +111,7 @@ public class WorkshopController {
         if (null != workshopDto) {
             return ResponseEntity.status(HttpStatus.OK).body(workshopDto);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
