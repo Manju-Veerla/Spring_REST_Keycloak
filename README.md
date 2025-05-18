@@ -6,7 +6,7 @@ A Spring Boot REST API for managing workshops and registrations.
 
 - Manage workshops (CRUD)
 - Register users for workshops
-- JWT-based authentication (OAuth2 Resource Server)
+- JWT-based authentication (Keycloak Resource Server)
 - OpenAPI (Swagger) documentation
 
 ## Tech Stack / Prerequisites
@@ -25,8 +25,10 @@ A Spring Boot REST API for managing workshops and registrations.
  ```bash
    git clone https://gitlab.com/unite-se-hr/IR-3012.git
    ```
-2. Navigate to the project directory:
-   cd workshop-service
+2. Navigate to the project directory:  
+   ```bash 
+    cd workshop-service
+   ```
    
 3. Install dependencies:
    ```bash
@@ -57,7 +59,7 @@ docker-compose down (# to stop the containers)
    ```bash
    docker run --name local_keycloak -p 8081:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:latest start-dev
     ```
-2. Access Keycloak admin console at [http://localhost:8081/auth/admin](http://localhost:8081/admin/master/console/) with username `admin` and password `admin`.
+2. Access Keycloak admin console at [http://localhost:8081/admin/master/console/](http://localhost:8081/admin/master/console/) with username `admin` and password `admin`.
 3. Import the Keycloak configuration JSON file provided in the `keycloak` directory into your Keycloak server.  
     - File Name: `workshop-realm.json`  
    (or)  
