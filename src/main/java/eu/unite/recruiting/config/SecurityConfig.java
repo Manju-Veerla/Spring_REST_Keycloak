@@ -29,7 +29,7 @@ public class SecurityConfig {
 
     // URLS that can be accessed without any authentication.
     private static final String[] WHITELIST_URLS = {"/api/v1/workshops/upcoming", "/h2-console",
-            "/v3/api-docs/**",
+            "/api-docs/**",
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/swagger-resources/**",
