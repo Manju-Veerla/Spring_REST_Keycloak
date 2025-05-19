@@ -8,7 +8,7 @@
         <version>3.4.5</version>
         <relativePath/>
     </parent>
-    <groupId>eu.unite.recruiting</groupId>
+    <groupId>com.app</groupId>
     <artifactId>workshop-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>workshop-service</name>
