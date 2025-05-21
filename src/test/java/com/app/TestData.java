@@ -1,8 +1,8 @@
 package com.app;
 
-import com.app.model.dto.RegistrationsDto;
-import com.app.model.dto.RegistrationsResponseDto;
-import com.app.model.dto.WorkshopDto;
+import com.app.model.request.RegistrationsRequest;
+import com.app.model.request.WorkshopRequest;
+import com.app.model.response.RegistrationsResponse;
 import com.app.model.entity.Workshop;
 
 import java.time.ZonedDateTime;
@@ -10,17 +10,17 @@ import java.util.List;
 
 public class TestData {
 
-    public static RegistrationsDto createRegistrationDto() {
-        return RegistrationsDto.builder().
-                id(1)
+    public static RegistrationsRequest createRegistrationDto() {
+        return RegistrationsRequest.builder().
+                registrationId(1)
                 .workshopCode("WS_100")
                 .userName("Test User")
                 .userEmail("test@example.com")
                 .build();
     }
 
-    public static WorkshopDto createWorkshopDto() {
-        return WorkshopDto.builder().
+    public static WorkshopRequest createWorkshopDto() {
+        return WorkshopRequest.builder().
                 code("WS_100")
                 .name("Workshop 1")
                 .description("Description of Workshop 1")
@@ -28,8 +28,8 @@ public class TestData {
                 .build();
     }
 
-    public static WorkshopDto newWorkshopDto() {
-        return WorkshopDto.builder().
+    public static WorkshopRequest newWorkshopDto() {
+        return WorkshopRequest.builder().
                 code("WS_1000")
                 .name("Workshop 1000")
                 .description("Description of Workshop 1")
@@ -39,17 +39,17 @@ public class TestData {
                 .build();
     }
 
-    public static RegistrationsResponseDto createRegistrationResponseDto() {
-        return RegistrationsResponseDto.builder().
-                id(1)
+    public static RegistrationsResponse createRegistrationResponseDto() {
+        return RegistrationsResponse.builder().
+                registrationId(1)
                 .workshopCode("WS_100")
                 .userPhone("1234567890")
                 .userPreferredContact("email")
                 .build();
     }
 
-    public static WorkshopDto createWorkshopDto(Workshop workshop) {
-        return WorkshopDto.builder().
+    public static WorkshopRequest createWorkshopDto(Workshop workshop) {
+        return WorkshopRequest.builder().
                 code(workshop.getCode())
                 .name(workshop.getName())
                 .description(workshop.getDescription())
@@ -59,22 +59,22 @@ public class TestData {
                 .build();
     }
 
-    public static List<RegistrationsDto> getRegistrationsList() {
+    public static List<RegistrationsRequest> getRegistrationsList() {
         return List.of(
-                RegistrationsDto.builder()
-                        .id(1)
+                RegistrationsRequest.builder()
+                        .registrationId(1)
                         .workshopCode("WS_100")
                         .userName("Test User")
                         .userEmail("test@example.com")
                         .build(),
-                RegistrationsDto.builder()
-                        .id(2)
+                RegistrationsRequest.builder()
+                        .registrationId(2)
                         .workshopCode("WS_200")
                         .userName("Test User 2")
                         .userEmail("test2@example.com")
                         .build(),
-                RegistrationsDto.builder()
-                        .id(3)
+                RegistrationsRequest.builder()
+                        .registrationId(3)
                         .workshopCode("WS_300")
                         .userName("Test User 3")
                         .userEmail("test3@example.com")

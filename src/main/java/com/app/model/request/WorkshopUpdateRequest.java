@@ -1,4 +1,4 @@
-package com.app.model.dto;
+package com.app.model.request;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.ZonedDateTime;
 
 @Data
-public class WorkshopUpdateDto {
+public class WorkshopUpdateRequest {
 
     @Size(min = 5, max = 50, message = "Name of workshop must be of size 5-15")
     private String name;

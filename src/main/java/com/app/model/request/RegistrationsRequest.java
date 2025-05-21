@@ -1,4 +1,4 @@
-package com.app.model.dto;
+package com.app.model.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -7,9 +7,9 @@ import lombok.Data;
 
 @Data
 @Builder
-public class RegistrationsDto {
+public class RegistrationsRequest {
 
-    private Integer id;
+    private Integer registrationId;
 
     @NotBlank(message = "Code cannot be empty")
     @Size(min = 5, max = 15, message = "Code of workshop must be of size 5-15")

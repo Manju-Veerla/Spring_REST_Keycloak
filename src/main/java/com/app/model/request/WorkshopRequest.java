@@ -1,4 +1,4 @@
-package com.app.model.dto;
+package com.app.model.request;
 
 import jakarta.validation.constraints.*;
 import lombok.Builder;
@@ -7,7 +7,7 @@ import java.time.ZonedDateTime;
 
 @Data
 @Builder
-public class WorkshopDto {
+public class WorkshopRequest {
 
     @NotBlank(message = "Code cannot be empty")
     @Size(min = 5, max = 15, message = "Code of workshop must be of size 5-15")

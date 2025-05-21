@@ -1,29 +1,46 @@
 package com.app.model.mapper;
 
-import com.app.model.dto.WorkshopDto;
+import com.app.model.entity.Registrations;
 import com.app.model.entity.Workshop;
+import com.app.model.request.WorkshopRequest;
+import com.app.model.response.RegistrationsResponse;
+import com.app.model.response.WorkshopResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
- * Maps between Workshop entities and WorkshopDto.
+ * Maps between Workshop entities and WorkshopRequest.
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = RegistrationsMapper.class)
 public interface WorkshopMapper {
 
     /**
-     * Maps a WorkshopDto to a Workshop entity.
+     * Maps a WorkshopRequest to a Workshop entity.
      *
      * @param workshopDto the request to map
      * @return the mapped Workshop entity
      */
-    Workshop WorkshopDtoToWorkshop(WorkshopDto workshopDto);
+    Workshop WorkshopRequestToWorkshop(WorkshopRequest workshopDto);
 
     /**
-     * Maps a Workshop entity to a WorkshopDto.
+     * Maps a Workshop entity to a WorkshopRequest.
      *
      * @param workshop the Workshop entity to map
-     * @return the mapped WorkshopDto
+     * @return the mapped WorkshopRequest
      */
-    WorkshopDto WorkshopToWorkshopDto(Workshop workshop);
+    WorkshopRequest WorkshopToWorkshopRequest(Workshop workshop);
+
+
+
+
+
+    @Mapping(target = "registrations", ignore = true)
+    WorkshopResponse WorkshopToWorkshopWithoutRegistrationsResponse(Workshop workshop);
+
+
 
 }

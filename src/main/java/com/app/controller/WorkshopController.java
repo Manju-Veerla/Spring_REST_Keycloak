@@ -1,7 +1,8 @@
 package com.app.controller;
 
-import com.app.model.dto.WorkshopDto;
-import com.app.model.dto.WorkshopUpdateDto;
+import com.app.model.request.WorkshopRequest;
+import com.app.model.request.WorkshopUpdateRequest;
+import com.app.model.response.WorkshopResponse;
 import com.app.service.WorkshopService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -43,7 +44,7 @@ public class WorkshopController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of upcoming workshops"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public List<WorkshopDto> getUpcomingWorkshops() {
+    public List<WorkshopResponse> getUpcomingWorkshops() {
         log.info("Getting all upcoming workshop details ");
         return workshopService.getUpcomingWorkshops();
 
@@ -61,7 +62,7 @@ public class WorkshopController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of workshops"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public List<WorkshopDto> getWorkshops() {
+    public List<WorkshopResponse> getWorkshops() {
         log.info("Getting all workshop details by admin user");
         return workshopService.getAllWorkshops();
     }
@@ -69,7 +70,7 @@ public class WorkshopController {
     /**
      * Create a new workshop when the user is an admin.
      *
-     * @param workshopDto the request that contains the workshop data.
+     * @param workshopRequest the request that contains the workshop data.
      * @return the newly created workshop.
      */
     @PreAuthorize("hasRole('ADMIN')")
@@ -78,11 +79,11 @@ public class WorkshopController {
     @Operation(summary = "Create a new workshop", description = "Create a new workshop")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Create a new workshop",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = WorkshopDto.class))}),
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = WorkshopRequest.class))}),
             @ApiResponse(responseCode = "400", description = "Workshop not created", content = @Content)})
-    public ResponseEntity<WorkshopDto> createWorkshop(@Valid @RequestBody WorkshopDto workshopDto) {
-        log.info("Workshop Request data {}", workshopDto);
-        WorkshopDto workshopSaved = workshopService.createWorkshop(workshopDto);
+    public ResponseEntity<WorkshopRequest> createWorkshop(@Valid @RequestBody WorkshopRequest workshopRequest) {
+        log.info("Workshop Request data {}", workshopRequest);
+        WorkshopRequest workshopSaved = workshopService.createWorkshop(workshopRequest);
         if (null != workshopSaved) {
             return ResponseEntity.status(HttpStatus.CREATED).body(workshopSaved);
         } else {
@@ -101,15 +102,15 @@ public class WorkshopController {
     @Operation(summary = "Get a workshop by code", description = "Retrieves a workshop's details using its code.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved workshop details",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = WorkshopDto.class))}),
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = WorkshopRequest.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid workshop code")
     })
-    public ResponseEntity<WorkshopDto> getWorkshop(@PathVariable String workshopCode) {
+    public ResponseEntity<WorkshopResponse> getWorkshop(@PathVariable String workshopCode) {
         log.info("Getting workshop with code  {} ", workshopCode);
         // Get the workshop details using the provided code
-        WorkshopDto workshopDto = workshopService.getWorkshopByCode(workshopCode);
-        if (null != workshopDto) {
-            return ResponseEntity.status(HttpStatus.OK).body(workshopDto);
+        WorkshopResponse workshopResponse = workshopService.getWorkshopByCode(workshopCode);
+        if (null != workshopResponse) {
+            return ResponseEntity.status(HttpStatus.OK).body(workshopResponse);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -147,13 +148,13 @@ public class WorkshopController {
     @Operation(summary = "Update a workshop", description = "Updates the details of a workshop using its code.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Workshop updated successfully",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = WorkshopDto.class))}),
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = WorkshopRequest.class))}),
             @ApiResponse(responseCode = "404", description = "Workshop not found"),
             @ApiResponse(responseCode = "400", description = "Invalid workshop code or data")
     })
-    public ResponseEntity<WorkshopDto> updateWorkshop(@PathVariable String workshopCode, @Valid @RequestBody WorkshopUpdateDto workshopDto) {
+    public ResponseEntity<WorkshopResponse> updateWorkshop(@PathVariable String workshopCode, @Valid @RequestBody WorkshopUpdateRequest workshopDto) {
         log.info("Updating workshop with code  {} ", workshopCode);
-        WorkshopDto workshopSaved = workshopService.updateWorkshop(workshopCode, workshopDto);
+        WorkshopResponse workshopSaved = workshopService.updateWorkshop(workshopCode, workshopDto);
         if (null != workshopSaved) {
             return ResponseEntity.status(HttpStatus.OK).body(workshopSaved);
         } else {

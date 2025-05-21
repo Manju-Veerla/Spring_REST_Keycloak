@@ -1,13 +1,13 @@
-package com.app.model.dto;
+package com.app.model.response;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class RegistrationsResponseDto {
+public class RegistrationsResponse {
 
-    private Integer id;
+    private Integer registrationId;
 
     private String workshopCode;
 

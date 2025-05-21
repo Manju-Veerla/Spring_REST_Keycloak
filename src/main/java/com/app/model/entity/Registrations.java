@@ -10,12 +10,12 @@ public class Registrations {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
-    private Integer id;
+    @Column(name = "reg_id")
+    private Integer registrationId;
 
-    @Column(name = "workshop_code", nullable = false)
+  /*  @Column(name = "workshop_code", nullable = false)
     private String workshopCode;
-
+*/
     @Column(name = "user_name", nullable = false)
     private String userName;
 
@@ -28,4 +28,7 @@ public class Registrations {
     @Column(name = "user_preferred_contact ")
     private String userPreferredContact;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "workshop_id")
+    private Workshop workshop;
 }

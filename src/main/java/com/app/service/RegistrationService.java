@@ -5,11 +5,13 @@ import com.app.exception.InvalidUserException;
 import com.app.exception.InvalidWorkshopDataException;
 import com.app.exception.RegistrationDoesnotExistException;
 import com.app.exception.UserAlreadyRegisteredException;
-import com.app.model.dto.RegistrationsDto;
-import com.app.model.dto.RegistrationsResponseDto;
+import com.app.model.entity.Workshop;
+import com.app.model.request.RegistrationsRequest;
+import com.app.model.response.RegistrationsResponse;
 import com.app.model.entity.Registrations;
 import com.app.model.mapper.RegistrationsMapper;
 import com.app.repository.RegistrationsRepository;
+import com.app.repository.WorkshopRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -38,25 +40,27 @@ public class RegistrationService {
     // The registration mapper
     private final RegistrationsMapper registrationsMapper;
 
+    private final WorkshopRepository workshopRepository;
+
     /**
      * Returns all workshops.
      *
      * @return a list of all workshops
      */
-    public List<RegistrationsDto> getAllRegistrations() {
+    public List<RegistrationsResponse> getAllRegistrations() {
         return registrationRepository.findAll().stream()
-                .map(registrationsMapper::RegistrationsToRegistrationsDto)
+                .map(registrationsMapper::RegistrationsToRegistrationsResponse)
                 .toList();
     }
 
     /**
      * Creates a new registration.
      *
-     * @param registrationsDto the registration details
+     * @param registrationsRequest the registration details
      * @param authentication   the authentication object
      * @return the created registration
      */
-    public RegistrationsDto createRegistration(RegistrationsDto registrationsDto, Authentication authentication) {
+    public RegistrationsResponse createRegistration(RegistrationsRequest registrationsRequest, Authentication authentication) {
         String userName = "";
         String email = "";
         if (authentication instanceof JwtAuthenticationToken jwtAuth) {
@@ -66,19 +70,31 @@ public class RegistrationService {
         if (StringUtils.isBlank(userName) || StringUtils.isBlank(email)) {
             throw new InvalidUserException("User not found");
         }
-        log.debug("Check if registration already exists {}", registrationsDto.getWorkshopCode());
-        if (checkIfUserAlreadyRegistered(registrationsDto.getWorkshopCode(), userName)) {
+        log.debug("Check if registration already exists {}", registrationsRequest.getWorkshopCode());
+        if (checkIfUserAlreadyRegistered(registrationsRequest.getWorkshopCode(), userName)) {
             throw new UserAlreadyRegisteredException("User already registered");
         }
-        log.debug("check if capacity is full for workshop code {}", registrationsDto.getWorkshopCode());
-        if (workshopRegistrationService.isWorkshopFull(registrationsDto.getWorkshopCode())) {
+        log.debug("check if capacity is full for workshop code {}", registrationsRequest.getWorkshopCode());
+        if (workshopRegistrationService.isWorkshopFull(registrationsRequest.getWorkshopCode())) {
             throw new InvalidWorkshopDataException("Workshop is full , user cannot register");
         }
-        registrationsDto.setUserName(userName);
-        registrationsDto.setUserEmail(email);
-        final Registrations registrationToSave = registrationsMapper.RegistrationsDtoToRegistrations(registrationsDto);
+        registrationsRequest.setUserName(userName);
+        registrationsRequest.setUserEmail(email);
+        final Registrations registrationToSave = registrationsMapper.RegistrationsRequestToRegistrations(registrationsRequest);
+       // Registrations savedRegistration = registrationRepository.save(registrationToSave);
+       // RegistrationsResponse registrationsResponse = registrationsMapper.RegistrationsToRegistrationsResponse(registrationToSave);
+        Workshop updateWorkshop = workshopRepository.findByCode(registrationsRequest.getWorkshopCode())
+                .orElseThrow(() -> new InvalidWorkshopDataException("Workshop not found with given code: " + registrationsRequest.getWorkshopCode()));
+        /*updateWorkshop.getRegistrations().add(registrationToSave);
+        Workshop savedWorkshop = workshopRepository.save(updateWorkshop);*/
+        // Set the workshop on the registration entity
+        registrationToSave.setWorkshop(updateWorkshop);
+// Save the registration (this will update the workshop's registrations set automatically)
         Registrations savedRegistration = registrationRepository.save(registrationToSave);
-        return registrationsMapper.RegistrationsToRegistrationsDto(savedRegistration);
+        RegistrationsResponse registrationsResponse = registrationsMapper.RegistrationsToRegistrationsResponse(savedRegistration);
+
+      //  Registrations savedRegistration = registrationRepository.save(registrationToSave);
+        return registrationsResponse;
     }
 
     /**
@@ -89,7 +105,7 @@ public class RegistrationService {
      * @return true if the user is already registered, false otherwise
      */
     private boolean checkIfUserAlreadyRegistered(@NotBlank(message = "Code cannot be empty") @Size(min = 5, max = 15, message = "Code of workshop must be of size 5-15") String workshopCode, String userName) {
-        return registrationRepository.existsByWorkshopCodeAndUserName(workshopCode, userName);
+        return workshopRepository.existsByCodeAndUserName(workshopCode, userName);
     }
 
     /**
@@ -99,6 +115,7 @@ public class RegistrationService {
      */
     @Transactional
     public void deleteRegistration(Integer id) {
+        //todo update from workshop
         log.debug("Deleting registration with id {}", id);
         registrationRepository.findById(id)
                 .orElseThrow(() -> new RegistrationDoesnotExistException("Registration not available with given id: " + id));
@@ -110,7 +127,7 @@ public class RegistrationService {
      * @param authentication the authentication object
      * @return a list of registrations for the user
      */
-    public List<RegistrationsResponseDto> getUserRegistrations(Authentication authentication) {
+    public List<RegistrationsResponse> getUserRegistrations(Authentication authentication) {
         String userName = "";
         if (authentication instanceof JwtAuthenticationToken jwtAuth) {
             userName = jwtAuth.getTokenAttributes().get("preferred_username").toString();
@@ -122,7 +139,7 @@ public class RegistrationService {
         List<Registrations> registrations = registrationRepository.findByUserName(userName);
         if (CollectionUtils.isNotEmpty(registrations)) {
             return registrations.stream()
-                    .map(registrationsMapper::RegistrationsToRegistrationsResponseDto)
+                    .map(registrationsMapper::RegistrationsToRegistrationsResponse)
                     .toList();
         }
         return List.of();

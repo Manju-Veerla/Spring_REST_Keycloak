@@ -1,6 +1,6 @@
 package com.app.exception;
 
-import com.app.model.dto.CustomError;
+import com.app.model.response.CustomErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +19,8 @@ public class GlobalExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(WorkshopAlreadyExistException.class)
-    public ResponseEntity<CustomError> handleUserAlreadyExistException(WorkshopAlreadyExistException ex) {
-        CustomError customErrorResponse = CustomError.builder()
+    public ResponseEntity<CustomErrorResponse> handleUserAlreadyExistException(WorkshopAlreadyExistException ex) {
+        CustomErrorResponse customErrorResponse = CustomErrorResponse.builder()
                 .header("WorkshopAlreadyExist")
                 .message(ex.getMessage())
                 .build();
@@ -30,8 +30,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(WorkshopNotFoundException.class)
-    public ResponseEntity<CustomError> handleWorkshopNotFoundException(WorkshopNotFoundException ex) {
-        CustomError customErrorResponse = CustomError.builder()
+    public ResponseEntity<CustomErrorResponse> handleWorkshopNotFoundException(WorkshopNotFoundException ex) {
+        CustomErrorResponse customErrorResponse = CustomErrorResponse.builder()
                 .header("WorkshopNotFound")
                 .message(ex.getMessage())
                 .build();
@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
         } else {
             defaultMessage = "Validation error occurred, but no specific message is available.";
         }
-        CustomError customError = CustomError.builder()
+        CustomErrorResponse customError = CustomErrorResponse.builder()
                 .header("Invalid data")
                 .message(defaultMessage)
                 .build();
@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidUserException.class)
     public ResponseEntity<?> handleInvalidUserException(InvalidUserException ex) {
         LOGGER.error("User information not available for workshop : {}", ex);
-        CustomError customError = CustomError.builder()
+        CustomErrorResponse customError = CustomErrorResponse.builder()
                 .header("User doesnot exist")
                 .message(ex.getMessage())
                 .build();
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserAlreadyRegisteredException.class)
     public ResponseEntity<?> handleUserAlreadyRegisteredException(UserAlreadyRegisteredException ex) {
         LOGGER.error("User registration failed for workshop : {}", ex);
-        CustomError customError = CustomError.builder()
+        CustomErrorResponse customError = CustomErrorResponse.builder()
                 .header("User already registered")
                 .message(ex.getMessage())
                 .build();
@@ -79,7 +79,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidWorkshopDataException.class)
     public ResponseEntity<?> handleInvalidWorkshopDataException(InvalidWorkshopDataException ex) {
         LOGGER.error("Invalid data for workshop : {}", ex);
-        CustomError customError = CustomError.builder()
+        CustomErrorResponse customError = CustomErrorResponse.builder()
                 .header("Invalid data")
                 .message(ex.getMessage())
                 .build();
@@ -89,7 +89,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RegistrationDoesnotExistException.class)
     public ResponseEntity<?> handleRegistrationDoesnotExistException(RegistrationDoesnotExistException ex) {
         LOGGER.error("Registration data not available : {}", ex);
-        CustomError customError = CustomError.builder()
+        CustomErrorResponse customError = CustomErrorResponse.builder()
                 .header("Registration data not available")
                 .message(ex.getMessage())
                 .build();

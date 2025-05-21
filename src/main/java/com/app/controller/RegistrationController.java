@@ -1,7 +1,7 @@
 package com.app.controller;
 
-import com.app.model.dto.RegistrationsDto;
-import com.app.model.dto.RegistrationsResponseDto;
+import com.app.model.request.RegistrationsRequest;
+import com.app.model.response.RegistrationsResponse;
 import com.app.service.RegistrationService;
 import com.app.service.WorkshopRegistrationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,7 +46,7 @@ public class RegistrationController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of registrations"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public List<RegistrationsDto> getRegistrations() {
+    public List<RegistrationsResponse> getRegistrations() {
         log.info("Getting all registration details ");
         return registrationService.getAllRegistrations();
     }
@@ -65,7 +65,7 @@ public class RegistrationController {
     })
     public ResponseEntity<?> getRegistrations(@PathVariable String workshopCode) {
         log.info("Getting registration with workshop code  {} ", workshopCode);
-        List<RegistrationsDto> registrations = workshopRegistrationService.getRegistrationsByCode(workshopCode);
+        List<RegistrationsResponse> registrations = workshopRegistrationService.getRegistrationsByCode(workshopCode);
         if (CollectionUtils.isNotEmpty(registrations)) {
             return ResponseEntity.status(HttpStatus.OK).body(registrations);
         } else {
@@ -76,7 +76,7 @@ public class RegistrationController {
 
     /**
      * Create a new registration
-     * @param registrationsDto the registration data
+     * @param registrationRequest the registration data
      * @param authentication   the authentication object
      * @return the created registration
      */
@@ -87,11 +87,11 @@ public class RegistrationController {
     @Operation(summary = "Register user for a workshop", description = "Register user for a workshop")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Register user for a workshop",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = RegistrationsDto.class))}),
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = RegistrationsRequest.class))}),
             @ApiResponse(responseCode = "400", description = "Registration not successful", content = @Content)})
-    public ResponseEntity<RegistrationsDto> createRegistration(@RequestBody RegistrationsDto registrationsDto, Authentication authentication) {
-        log.info("Registration Request data {}", registrationsDto);
-        RegistrationsDto registrationSaved = registrationService.createRegistration(registrationsDto, authentication);
+    public ResponseEntity<RegistrationsResponse> createRegistration(@RequestBody RegistrationsRequest registrationRequest, Authentication authentication) {
+        log.info("Registration Request data {}", registrationRequest);
+        RegistrationsResponse registrationSaved = registrationService.createRegistration(registrationRequest, authentication);
         if (null != registrationSaved) {
             return ResponseEntity.status(HttpStatus.CREATED).body(registrationSaved);
         } else {
@@ -129,7 +129,7 @@ public class RegistrationController {
     public ResponseEntity<?> getUserRegistrations(Authentication authentication) {
         log.info("Getting all registration details specific to user");
         if (null != authentication) {
-            List<RegistrationsResponseDto> userRegistrations = registrationService.getUserRegistrations(authentication);
+            List<RegistrationsResponse> userRegistrations = registrationService.getUserRegistrations(authentication);
             if (CollectionUtils.isNotEmpty(userRegistrations)) {
                 return ResponseEntity.status(HttpStatus.OK).body(userRegistrations);
             } else {

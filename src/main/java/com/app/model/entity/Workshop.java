@@ -13,8 +13,8 @@ public class Workshop {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
-    private Integer id;
+    @Column(name = "workshop_id")
+    private Integer workshopId;
 
     @Column(name = "code", nullable = false, unique = true)
     private String code;
@@ -34,6 +34,7 @@ public class Workshop {
     @Column(name = "capacity", nullable = false)
     private int capacity;
 
-    @OneToMany(mappedBy = "workshop" , cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToMany( cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "workshop_id", referencedColumnName="workshop_id")
     private Set<Registrations> registrations;
 }
