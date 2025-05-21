@@ -1,0 +1,201 @@
+# Namespace (optional)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: workshop
+
+---
+# Persistent Volume Claim for PostgreSQL
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: workshop
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+# ConfigMap for init.sql (if small, otherwise use a volume)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+  namespace: workshop
+data:
+  init.sql: |
+    # Paste your init.sql content here
+
+---
+# Service for PostgreSQL
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: workshop
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: db
+
+---
+# Deployment for PostgreSQL
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  namespace: workshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: workshop_local_db
+            - name: POSTGRES_USER
+              value: admin
+            - name: POSTGRES_PASSWORD
+              value: admin
+          volumeMounts:
+            - name: postgres-local-data
+              mountPath: /var/lib/postgresql/data
+            - name: init-sql
+              mountPath: /docker-entrypoint-initdb.d/
+      volumes:
+        - name: postgres-local-data
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+        - name: init-sql
+          configMap:
+            name: postgres-init
+
+---
+# Service for Keycloak
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  namespace: workshop
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+
+  selector:
+    app: keycloak
+  type: NodePort          # Change to LoadBalancer if on cloud
+
+---
+# Deployment for Keycloak
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  namespace: workshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak:latest
+          args:
+            - start-dev
+            - --import-realm
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KC_BOOTSTRAP_ADMIN_USERNAME
+              value: admin
+            - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+              value: admin
+            - name: KC_HOSTNAME
+              value: localhost
+            - name: KC_HOSTNAME_PORT
+              value: "8081"
+            - name: DB_VENDOR
+              value: POSTGRES
+            - name: DB_ADDR
+              value: db
+            - name: DB_DATABASE
+              value: keycloak
+            - name: DB_USER
+              value: keycloak
+            - name: DB_PASSWORD
+              value: keycloak
+            - name: KEYCLOAK_REALM
+              value: workshop
+          volumeMounts:
+            - name: realm-import
+              mountPath: /opt/keycloak/data/import/
+      volumes:
+        - name: realm-import
+          emptyDir: {} # Replace with actual realm import method as needed
+
+---
+# Service for Spring Boot app
+apiVersion: v1
+kind: Service
+metadata:
+  name: workshop-local
+  namespace: workshop
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+
+  selector:
+    app: workshop-local
+  type: NodePort
+
+---
+# Deployment for Spring Boot app
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workshop-local
+  namespace: workshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: workshop-local
+  template:
+    metadata:
+      labels:
+        app: workshop-local
+    spec:
+      containers:
+        - name: workshop-local
+          image: workshop-local:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://db:5432/workshop_local_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: admin
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: admin

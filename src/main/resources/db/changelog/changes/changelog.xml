@@ -1,0 +1,37 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet id="1" author="author">
+        <!--<sqlFile path="db/changelog/init.sql" relativeToChangelogFile="true" />-->
+    <createTable tableName="workshops">
+        <column name="id" type="int" autoIncrement="true">
+            <constraints primaryKey="true" nullable="false" primaryKeyName="PK_TODOS"/>
+        </column>
+        <column name="name" type="varchar(255)">
+            <constraints nullable="false" />
+        </column>
+        <column name="description" type="varchar(255)">
+            <constraints nullable="true" />
+        </column>
+    </createTable>
+    <createTable tableName="registrations">
+        <column name="id" type="int" autoIncrement="true">
+            <constraints primaryKey="true" nullable="false" primaryKeyName="PK_SUBTASK"/>
+        </column>
+        <column name="name" type="varchar(255)">
+            <constraints nullable="false" />
+        </column>
+        <column name="description" type="varchar(255)">
+            <constraints nullable="true" />
+        </column>
+        <column name="todo_id" type="int">
+            <constraints nullable="true" />
+        </column>
+    </createTable>
+</changeSet>
+<changeSet id="100-2" author="manju">
+<addForeignKeyConstraint baseColumnNames="todo_id" baseTableName="subtask" constraintName="FK_todo_task"
+                         referencedColumnNames="id" referencedTableName="todo" />
+</changeSet>
+</databaseChangeLog>

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.ZonedDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "workshops")
@@ -33,4 +34,6 @@ public class Workshop {
     @Column(name = "capacity", nullable = false)
     private int capacity;
 
+    @OneToMany(mappedBy = "workshop" , cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    private Set<Registrations> registrations;
 }

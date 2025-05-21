@@ -23,7 +23,7 @@ A Spring Boot REST API for managing workshops and registrations.
 ### Installation
 1. Clone the repository:
  ```bash
-   git clone https://gitlab.com/unite-se-hr/IR-3012.git
+   git clone https://gitlab.com/manju.veerla/keycloak.git
    ```
 2. Navigate to the project directory:  
    ```bash 
@@ -70,9 +70,9 @@ docker-compose down (# to stop the containers)
    - Create Roles : `admin`, `user`
    - Create Users : `admin`, `user`
 ### PostgreSQL Configuration
-1. Create a PostgreSQL database named `workshop_db` with user 'unite' and password 'unite'.
-2. GRANT ALL PRIVILEGES ON DATABASE workshop_db to unite;
-3. ALTER DATABASE workshop_db OWNER TO unite;
+1. Create a PostgreSQL database named `workshop_local_db` with user 'admin' and password 'admin'.
+2. GRANT ALL PRIVILEGES ON DATABASE workshop_db to admin;
+3. ALTER DATABASE workshop_db OWNER TO admin;
 4. SQL Scripts : Initial sql scripts are provided in the `init.sql` file.
 
 ### Endpoints
