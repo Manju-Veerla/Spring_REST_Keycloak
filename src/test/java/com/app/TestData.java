@@ -1,5 +1,6 @@
 package com.app;
 
+import com.app.model.entity.PreferredContact;
 import com.app.model.request.RegistrationsRequest;
 import com.app.model.request.WorkshopRequest;
 import com.app.model.response.RegistrationsResponse;
@@ -16,6 +17,8 @@ public class TestData {
                 .workshopCode("WS_100")
                 .userName("Test User")
                 .userEmail("test@example.com")
+                .userPhone("1234567890")
+                .userPreferredContact(PreferredContact.EMAIL)
                 .build();
     }
 
@@ -44,7 +47,7 @@ public class TestData {
                 registrationId(1)
                 .workshopCode("WS_100")
                 .userPhone("1234567890")
-                .userPreferredContact("email")
+                .userPreferredContact(PreferredContact.EMAIL)
                 .build();
     }
 

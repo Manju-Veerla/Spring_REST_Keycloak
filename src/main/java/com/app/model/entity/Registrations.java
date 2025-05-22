@@ -26,8 +26,9 @@ public class Registrations {
     private String workshopCode;
 
 
-    @Column(name = "user_preferred_contact")
-    private String userPreferredContact;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_preferred_contact", nullable = false)
+    private PreferredContact userPreferredContact;
 
 
 }

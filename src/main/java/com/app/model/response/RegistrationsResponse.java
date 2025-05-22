@@ -1,5 +1,6 @@
 package com.app.model.response;
 
+import com.app.model.entity.PreferredContact;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,6 +14,6 @@ public class RegistrationsResponse {
 
     private String userPhone;
 
-    private String userPreferredContact;
+    private PreferredContact userPreferredContact;
 
 }

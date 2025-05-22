@@ -1,6 +1,8 @@
 package com.app.model.request;
 
+import com.app.model.entity.PreferredContact;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +23,7 @@ public class RegistrationsRequest {
 
     private String userPhone;
 
-    private String userPreferredContact;
+    @NotNull(message = "Preferred contact method is required")
+    private PreferredContact userPreferredContact;
 
 }
