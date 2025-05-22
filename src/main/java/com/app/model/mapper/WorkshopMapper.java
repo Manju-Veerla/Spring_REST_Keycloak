@@ -1,16 +1,10 @@
 package com.app.model.mapper;
 
-import com.app.model.entity.Registrations;
 import com.app.model.entity.Workshop;
 import com.app.model.request.WorkshopRequest;
-import com.app.model.response.RegistrationsResponse;
 import com.app.model.response.WorkshopResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Maps between Workshop entities and WorkshopRequest.
@@ -35,12 +29,11 @@ public interface WorkshopMapper {
     WorkshopRequest WorkshopToWorkshopRequest(Workshop workshop);
 
 
-
-
-
     @Mapping(target = "registrations", ignore = true)
     WorkshopResponse WorkshopToWorkshopWithoutRegistrationsResponse(Workshop workshop);
 
+
+    WorkshopResponse WorkshopToWorkshopResponse(Workshop workshop);
 
 
 }

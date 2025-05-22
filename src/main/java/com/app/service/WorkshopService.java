@@ -4,11 +4,10 @@ package com.app.service;
 import com.app.exception.InvalidWorkshopDataException;
 import com.app.exception.WorkshopAlreadyExistException;
 import com.app.exception.WorkshopNotFoundException;
-import com.app.model.entity.Registrations;
-import com.app.model.request.WorkshopRequest;
-import com.app.model.request.WorkshopUpdateRequest;
 import com.app.model.entity.Workshop;
 import com.app.model.mapper.WorkshopMapper;
+import com.app.model.request.WorkshopRequest;
+import com.app.model.request.WorkshopUpdateRequest;
 import com.app.model.response.WorkshopResponse;
 import com.app.repository.WorkshopRepository;
 import jakarta.transaction.Transactional;
@@ -18,10 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -62,13 +58,8 @@ public class WorkshopService {
     public List<WorkshopResponse> getAllWorkshops() {
         log.debug("Getting all workshop details for admin ");
         List<Workshop> workshops = workshopRepository.findAll();
-        if (workshops == null) {
-            return Collections.emptyList();
-        }
-        //TODO
-        // Create defensive copies of workshops and their registrations
         return workshops.stream()
-                .map(workshopMapper::WorkshopToWorkshopWithoutRegistrationsResponse)
+                .map(workshopMapper::WorkshopToWorkshopResponse)
                 .collect(Collectors.toList());
     }
 
@@ -127,9 +118,7 @@ public class WorkshopService {
     public WorkshopResponse getWorkshopByCode(String code) {
         Workshop workshop = workshopRepository.findByCode(code)
                 .orElseThrow(() -> new WorkshopNotFoundException("Workshop not found with given code: " + code));
-        //TODO
-        WorkshopResponse workshopResponse = workshopMapper.WorkshopToWorkshopWithoutRegistrationsResponse(workshop);
-        return workshopResponse;
+        return workshopMapper.WorkshopToWorkshopResponse(workshop);
     }
 
 
@@ -142,18 +131,18 @@ public class WorkshopService {
     public void deleteWorkshop(String workshopCode) {
         Workshop workshop = workshopRepository.findByCode(workshopCode)
                 .orElseThrow(() -> new WorkshopNotFoundException("Workshop not found with given code: " + workshopCode));
-        if (workshopRegistrationService.getRegistrationsByCode(workshopCode).size() > 0) {
+        if (!workshopRegistrationService.getRegistrationsByCode(workshopCode).isEmpty()) {
             throw new InvalidWorkshopDataException("Cannot delete workshop with registrations");
         }
-       workshopRepository.delete(workshop);
+        workshopRepository.delete(workshop);
         log.info("Workshop with code {} deleted successfully", workshopCode);
     }
 
     /**
      * Updates a workshop by its code.
      *
-     * @param workshopCode the code of the workshop to update
-     * @param workshopUpdateRequest  the new workshop data
+     * @param workshopCode          the code of the workshop to update
+     * @param workshopUpdateRequest the new workshop data
      * @return the updated workshop
      */
     @Transactional
@@ -166,7 +155,7 @@ public class WorkshopService {
     /**
      * Updates the workshop data.
      *
-     * @param workshop    the workshop to update
+     * @param workshop              the workshop to update
      * @param workshopUpdateRequest the new workshop data
      * @return the updated workshop
      */
@@ -190,14 +179,13 @@ public class WorkshopService {
             validateStartOrEndTime(workshop, workshopUpdateRequest);
         }
         Workshop updatedWorkshop = workshopRepository.save(workshop);
-        //TODO
         return workshopMapper.WorkshopToWorkshopWithoutRegistrationsResponse(updatedWorkshop);
     }
 
     /**
      * Validates the start or end time of the workshop.
      *
-     * @param workshop    the workshop to validate
+     * @param workshop              the workshop to validate
      * @param workshopUpdateRequest the new workshop data
      */
     private static void validateStartOrEndTime(Workshop workshop, WorkshopUpdateRequest workshopUpdateRequest) {

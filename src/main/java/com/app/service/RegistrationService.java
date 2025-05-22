@@ -5,11 +5,11 @@ import com.app.exception.InvalidUserException;
 import com.app.exception.InvalidWorkshopDataException;
 import com.app.exception.RegistrationDoesnotExistException;
 import com.app.exception.UserAlreadyRegisteredException;
+import com.app.model.entity.Registrations;
 import com.app.model.entity.Workshop;
+import com.app.model.mapper.RegistrationsMapper;
 import com.app.model.request.RegistrationsRequest;
 import com.app.model.response.RegistrationsResponse;
-import com.app.model.entity.Registrations;
-import com.app.model.mapper.RegistrationsMapper;
 import com.app.repository.RegistrationsRepository;
 import com.app.repository.WorkshopRepository;
 import jakarta.transaction.Transactional;
@@ -57,7 +57,7 @@ public class RegistrationService {
      * Creates a new registration.
      *
      * @param registrationsRequest the registration details
-     * @param authentication   the authentication object
+     * @param authentication       the authentication object
      * @return the created registration
      */
     public RegistrationsResponse createRegistration(RegistrationsRequest registrationsRequest, Authentication authentication) {
@@ -81,20 +81,14 @@ public class RegistrationService {
         registrationsRequest.setUserName(userName);
         registrationsRequest.setUserEmail(email);
         final Registrations registrationToSave = registrationsMapper.RegistrationsRequestToRegistrations(registrationsRequest);
-       // Registrations savedRegistration = registrationRepository.save(registrationToSave);
-       // RegistrationsResponse registrationsResponse = registrationsMapper.RegistrationsToRegistrationsResponse(registrationToSave);
         Workshop updateWorkshop = workshopRepository.findByCode(registrationsRequest.getWorkshopCode())
                 .orElseThrow(() -> new InvalidWorkshopDataException("Workshop not found with given code: " + registrationsRequest.getWorkshopCode()));
-        /*updateWorkshop.getRegistrations().add(registrationToSave);
-        Workshop savedWorkshop = workshopRepository.save(updateWorkshop);*/
-        // Set the workshop on the registration entity
-        registrationToSave.setWorkshop(updateWorkshop);
-// Save the registration (this will update the workshop's registrations set automatically)
-        Registrations savedRegistration = registrationRepository.save(registrationToSave);
-        RegistrationsResponse registrationsResponse = registrationsMapper.RegistrationsToRegistrationsResponse(savedRegistration);
 
-      //  Registrations savedRegistration = registrationRepository.save(registrationToSave);
-        return registrationsResponse;
+        Registrations savedRegistration = registrationRepository.save(registrationToSave);
+        updateWorkshop.getRegistrations().add(registrationToSave);
+        Workshop savedWorkshop = workshopRepository.save(updateWorkshop);
+        savedRegistration.setWorkshopCode(savedWorkshop.getCode());
+        return registrationsMapper.RegistrationsToRegistrationsResponse(savedRegistration);
     }
 
     /**
@@ -115,7 +109,6 @@ public class RegistrationService {
      */
     @Transactional
     public void deleteRegistration(Integer id) {
-        //todo update from workshop
         log.debug("Deleting registration with id {}", id);
         registrationRepository.findById(id)
                 .orElseThrow(() -> new RegistrationDoesnotExistException("Registration not available with given id: " + id));
@@ -123,7 +116,8 @@ public class RegistrationService {
     }
 
     /**
-     *  Returns all registrations for a specific user.
+     * Returns all registrations for a specific user.
+     *
      * @param authentication the authentication object
      * @return a list of registrations for the user
      */

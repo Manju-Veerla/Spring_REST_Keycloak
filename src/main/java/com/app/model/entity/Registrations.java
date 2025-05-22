@@ -13,9 +13,7 @@ public class Registrations {
     @Column(name = "reg_id")
     private Integer registrationId;
 
-  /*  @Column(name = "workshop_code", nullable = false)
-    private String workshopCode;
-*/
+
     @Column(name = "user_name", nullable = false)
     private String userName;
 
@@ -25,10 +23,11 @@ public class Registrations {
     @Column(name = "user_phone")
     private String userPhone;
 
-    @Column(name = "user_preferred_contact ")
+    private String workshopCode;
+
+
+    @Column(name = "user_preferred_contact")
     private String userPreferredContact;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workshop_id")
-    private Workshop workshop;
+
 }
