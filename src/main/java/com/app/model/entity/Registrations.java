@@ -23,6 +23,7 @@ public class Registrations {
     @Column(name = "user_phone")
     private String userPhone;
 
+    @Column(name = "workshop_code", nullable = false)
     private String workshopCode;
 
 

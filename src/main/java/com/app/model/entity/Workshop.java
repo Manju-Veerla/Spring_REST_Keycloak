@@ -35,6 +35,6 @@ public class Workshop {
     private int capacity;
 
     @OneToMany( cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "workshop_id", referencedColumnName="workshop_id")
+    @JoinColumn(name = "workshop_code", referencedColumnName="code")
     private Set<Registrations> registrations;
 }
