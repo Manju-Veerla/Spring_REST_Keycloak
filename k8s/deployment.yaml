@@ -1,8 +1,12 @@
-# Namespace (optional)
+---
+# Namespace
 apiVersion: v1
 kind: Namespace
 metadata:
   name: workshop
+  labels:
+    name: workshop
+    environment: development
 
 ---
 # Persistent Volume Claim for PostgreSQL
@@ -62,23 +66,50 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:latest
+          image: postgres:15-alpine
           ports:
             - containerPort: 5432
           env:
             - name: POSTGRES_DB
-              value: workshop_local_db
+              value: workshop_db
             - name: POSTGRES_USER
               value: admin
             - name: POSTGRES_PASSWORD
-              value: admin
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: password
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+          livenessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - admin
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            readOnlyRootFilesystem: true
           volumeMounts:
-            - name: postgres-local-data
+            - name: postgres-data
               mountPath: /var/lib/postgresql/data
             - name: init-sql
               mountPath: /docker-entrypoint-initdb.d/
       volumes:
-        - name: postgres-local-data
+        - name: postgres-data
           persistentVolumeClaim:
             claimName: postgres-pvc
         - name: init-sql
@@ -121,32 +152,58 @@ spec:
       containers:
         - name: keycloak
           image: quay.io/keycloak/keycloak:latest
-          args:
-            - start-dev
-            - --import-realm
+          args: ["start-dev"]
           ports:
             - containerPort: 8080
           env:
-            - name: KC_BOOTSTRAP_ADMIN_USERNAME
-              value: admin
-            - name: KC_BOOTSTRAP_ADMIN_PASSWORD
-              value: admin
+            - name: KEYCLOAK_ADMIN
+              value: "admin"
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-secrets
+                  key: admin-password
             - name: KC_HOSTNAME
-              value: localhost
-            - name: KC_HOSTNAME_PORT
-              value: "8081"
-            - name: DB_VENDOR
-              value: POSTGRES
-            - name: DB_ADDR
-              value: db
-            - name: DB_DATABASE
+              value: keycloak.workshop.svc.cluster.local
+            - name: KC_HTTP_ENABLED
+              value: "true"
+            - name: KC_PROXY
+              value: "edge"
+            - name: KC_DB
+              value: postgres
+            - name: KC_DB_URL
+              value: jdbc:postgresql://db:5432/keycloak
+            - name: KC_DB_USERNAME
               value: keycloak
-            - name: DB_USER
-              value: keycloak
-            - name: DB_PASSWORD
-              value: keycloak
-            - name: KEYCLOAK_REALM
-              value: workshop
+            - name: KC_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-db-secrets
+                  key: password
+            - name: KC_FEATURES
+              value: "token-exchange,admin-fine-grained-authz,admin2"
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+          livenessProbe:
+            httpGet:
+              path: /realms/master
+              port: 8080
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /realms/master
+              port: 8080
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
           volumeMounts:
             - name: realm-import
               mountPath: /opt/keycloak/data/import/
@@ -159,7 +216,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: workshop-local
+  name: workshop
   namespace: workshop
 spec:
   ports:
@@ -167,7 +224,7 @@ spec:
       targetPort: 8080
 
   selector:
-    app: workshop-local
+    app: workshop
   type: NodePort
 
 ---
@@ -175,27 +232,67 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: workshop-local
+  name: workshop
   namespace: workshop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: workshop-local
+      app: workshop
   template:
     metadata:
       labels:
-        app: workshop-local
+        app: workshop
     spec:
       containers:
-        - name: workshop-local
-          image: workshop-local:latest
+        - name: workshop
+          image: workshop:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "k8s"
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://db:5432/workshop_local_db
+              value: jdbc:postgresql://db:5432/workshop_db
             - name: SPRING_DATASOURCE_USERNAME
               value: admin
             - name: SPRING_DATASOURCE_PASSWORD
-              value: admin
+              valueFrom:
+                secretKeyRef:
+                  name: app-db-secrets
+                  key: password
+            - name: KEYCLOAK_AUTH_SERVER_URL
+              value: http://keycloak:8080/realms/workshop
+            - name: KEYCLOAK_RESOURCE
+              value: workshop-client
+            - name: KEYCLOAK_CREDENTIALS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secrets
+                  key: client-secret
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 45
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            readOnlyRootFilesystem: true
