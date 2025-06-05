@@ -12,6 +12,10 @@ public class RegistrationsResponse {
 
     private String workshopCode;
 
+    private String userName;
+
+    private String userEmail;
+
     private String userPhone;
 
     private PreferredContact userPreferredContact;

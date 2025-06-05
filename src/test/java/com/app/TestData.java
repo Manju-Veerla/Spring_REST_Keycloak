@@ -5,13 +5,14 @@ import com.app.model.request.RegistrationsRequest;
 import com.app.model.request.WorkshopRequest;
 import com.app.model.response.RegistrationsResponse;
 import com.app.model.entity.Workshop;
+import com.app.model.response.WorkshopResponse;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
 public class TestData {
 
-    public static RegistrationsRequest createRegistrationDto() {
+    public static RegistrationsRequest createRegistrationRequest() {
         return RegistrationsRequest.builder().
                 registrationId(1)
                 .workshopCode("WS_100")
@@ -22,16 +23,7 @@ public class TestData {
                 .build();
     }
 
-    public static WorkshopRequest createWorkshopDto() {
-        return WorkshopRequest.builder().
-                code("WS_100")
-                .name("Workshop 1")
-                .description("Description of Workshop 1")
-                .capacity(10)
-                .build();
-    }
-
-    public static WorkshopRequest newWorkshopDto() {
+    public static WorkshopRequest newWorkshopRequest() {
         return WorkshopRequest.builder().
                 code("WS_1000")
                 .name("Workshop 1000")
@@ -42,7 +34,7 @@ public class TestData {
                 .build();
     }
 
-    public static RegistrationsResponse createRegistrationResponseDto() {
+    public static RegistrationsResponse createRegistrationResponse() {
         return RegistrationsResponse.builder().
                 registrationId(1)
                 .workshopCode("WS_100")
@@ -51,7 +43,7 @@ public class TestData {
                 .build();
     }
 
-    public static WorkshopRequest createWorkshopDto(Workshop workshop) {
+    public static WorkshopRequest createWorkshopRequest(Workshop workshop) {
         return WorkshopRequest.builder().
                 code(workshop.getCode())
                 .name(workshop.getName())
@@ -59,6 +51,28 @@ public class TestData {
                 .capacity(workshop.getCapacity())
                 .startTime(workshop.getStartTime())
                 .endTime(workshop.getEndTime())
+                .build();
+    }
+
+    public static WorkshopResponse createWorkshopResponse(Workshop workshop) {
+        return WorkshopResponse.builder().
+                code(workshop.getCode())
+                .name(workshop.getName())
+                .description(workshop.getDescription())
+                .capacity(workshop.getCapacity())
+                .startTime(workshop.getStartTime())
+                .endTime(workshop.getEndTime())
+                .build();
+    }
+
+    public static WorkshopResponse createWorkshopResponse() {
+        return WorkshopResponse.builder().
+                code("WS_100")
+                .name("TEST WORKSHOP")
+                .description("Test Description")
+                .capacity(10)
+                .startTime(ZonedDateTime.now().plusDays(10))
+                .endTime(ZonedDateTime.now().plusDays(11))
                 .build();
     }
 

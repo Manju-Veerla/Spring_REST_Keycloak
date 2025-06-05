@@ -1,25 +1,25 @@
 services:
-  workshop-local:
-    image: workshop-local
+  workshop-service:
+    image: workshop
     build: .
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/workshop_local_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/workshop_db
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=admin
     depends_on:
       - db
       - keycloak
     networks:
-        - workshoplocalnetwork
+        - workshopnetwork
 
   db:
     container_name: postgres
     image: postgres:latest
     restart: always
     environment:
-      POSTGRES_DB: workshop_local_db
+      POSTGRES_DB: workshop_db
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
     ports:
@@ -28,7 +28,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./db/changelog/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-        - workshoplocalnetwork
+        - workshopnetwork
 
   keycloak:
     container_name: keycloak
@@ -54,10 +54,10 @@ services:
     depends_on:
       - db
     networks:
-        - workshoplocalnetwork
+        - workshopnetwork
 networks:
-  workshoplocalnetwork:
+  workshopnetwork:
     driver: bridge
 volumes:
-  postgres_local_data:
+  postgres_data:
     driver: local

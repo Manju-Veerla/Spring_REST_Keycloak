@@ -18,10 +18,10 @@ FROM amazoncorretto:21
 WORKDIR workshop-service
 
 # Copy the JAR file from the build stage
-COPY --from=build target/*.jar workshop-local.jar
+COPY --from=build target/*.jar workshop.jar
 
 # Expose port 8080
 EXPOSE 8080
 
 # Set the entrypoint command for running the application
-ENTRYPOINT ["java", "-jar", "workshop-local.jar"]
+ENTRYPOINT ["java", "-jar", "workshop.jar"]
