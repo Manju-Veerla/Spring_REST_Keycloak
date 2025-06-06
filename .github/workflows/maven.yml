@@ -30,5 +30,13 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: allure-report
-        path: target/site/allure-maven-plugin
+        path: target/allure-report
+        retention-days: 30
+
+    - name: Upload TestNG Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: testng-report
+        path: target/surefire-reports
         retention-days: 30
