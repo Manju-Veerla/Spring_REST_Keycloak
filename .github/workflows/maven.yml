@@ -6,37 +6,59 @@ on:
   workflow_dispatch:
 
 jobs:
-  Test-report:
+  test-report:
+    name: Test and Generate Report
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v4
-      
-    - name: Set up JDK 21
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-        cache: maven
-    
+      - uses: actions/checkout@v4
 
-    - name: Run tests and generate Allure report
-      run: |
-        mvn clean test -Dmaven.test.failure.ignore=true
-        mvn io.qameta.allure:allure-maven:report
-    
-    - name: Upload Allure Report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: allure-report
-        path: target/allure-report
-        retention-days: 30
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
 
-    - name: Upload TestNG Report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: testng-report
-        path: target/surefire-reports
-        retention-days: 30
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2-
+
+      - name: Install Allure Commandline
+        run: |
+          ALLURE_VERSION=2.22.0
+          wget https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/${ALLURE_VERSION}/allure-commandline-${ALLURE_VERSION}.zip
+          sudo unzip -d /usr/share allure-commandline-${ALLURE_VERSION}.zip
+          sudo ln -s /usr/share/allure-${ALLURE_VERSION}/bin/allure /usr/bin/allure
+          allure --version
+
+      - name: Run tests with Allure reporting
+        run: |
+          mvn clean test -Dmaven.test.failure.ignore=true \
+            -Dallure.results.directory=target/allure-results
+
+      - name: Generate Allure report
+        if: success() || failure()
+        run: |
+          mkdir -p target/allure-results
+          allure generate target/allure-results --clean -o target/allure-report
+          find target/allure-report -type f -name "*.html" -exec sed -i 's/<table class="table">/<table class="table table-striped table-bordered">/g' {} +
+
+      - name: Upload Allure Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: target/allure-report
+          retention-days: 30
+
+      - name: Upload TestNG Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testng-report
+          path: target/surefire-reports
+          retention-days: 30
