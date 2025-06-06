@@ -1,4 +1,4 @@
-name: Workshop API Tests with Allure Report
+name: Workshop API Tests
 
 on:
   push:
