@@ -6,7 +6,7 @@ import com.app.model.response.RegistrationsResponse;
 import com.app.service.RegistrationService;
 import com.app.service.WorkshopRegistrationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

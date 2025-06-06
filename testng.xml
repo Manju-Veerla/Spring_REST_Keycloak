@@ -3,7 +3,7 @@
 <suite name="Workshop API Test Suite" parallel="tests" thread-count="3">
     <test name="API Tests" preserve-order="true">
         <packages>
-            <package name="com.workshop.*"/>
+            <package name="com.app.*"/>
         </packages>
     </test>
     

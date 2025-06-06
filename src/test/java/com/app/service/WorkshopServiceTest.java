@@ -11,7 +11,7 @@ import com.app.model.mapper.WorkshopMapper;
 import com.app.model.response.WorkshopResponse;
 import com.app.repository.WorkshopRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 import org.mockito.*;
 import java.time.ZonedDateTime;
 import java.util.*;
