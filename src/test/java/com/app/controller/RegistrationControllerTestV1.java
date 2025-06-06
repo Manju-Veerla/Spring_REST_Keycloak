@@ -5,6 +5,7 @@ import com.app.config.TestUtil;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -13,6 +14,9 @@ import org.testng.annotations.Test;
 import static io.restassured.RestAssured.given;
 
 public class RegistrationControllerTestV1 {
+
+    String code = "WS_"+ RandomStringUtils.randomNumeric(3);
+
     @BeforeClass
     public void setup() {
         // Configure REST Assured
@@ -52,7 +56,7 @@ public class RegistrationControllerTestV1 {
                 .when()
                 .get(TestConfig.getRegistrationsEndpoint())
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
@@ -62,23 +66,24 @@ public class RegistrationControllerTestV1 {
                 .when()
                 .get(TestConfig.getRegistrationsEndpoint())
                 .then()
-                .statusCode(401);
+                .statusCode(403);
     }
 
 
     @Test
     void givenAdminAuth_whenGetRegistrationByWorkshopCode_thenReturn200AndCorrectWorkshop() {
         // Example using the endpoints
+
         ValidatableResponse response = given()
                 .auth().oauth2(TestUtil.getAdminAuthToken())
                 .when()
-                .get(TestConfig.getRegistrationByWorkshopEndpoint("WS_700"))
+                .get(TestConfig.getRegistrationByWorkshopEndpoint(code))
                 .then();
         // Get the workshopCode as a List since it's an array in the response
         String workshopCode = response.extract().jsonPath().getString("workshopCode[0]");
 
         Assert.assertEquals(response.extract().statusCode(), 200);
-        Assert.assertEquals(workshopCode, "WS_700");
+        Assert.assertEquals(workshopCode, code);
     }
 
     @Test
@@ -101,7 +106,7 @@ public class RegistrationControllerTestV1 {
     void givenValidRegistrationRequest_whenUserAuthenticated_thenReturn201() {
         given().auth().oauth2(TestUtil.getUserAuthToken())
                 .contentType("application/json")
-                .body(TestConfig.getRegistrationRequestBody("WS_100", "+49123456789", "EMAIL"))
+                .body(TestConfig.getRegistrationRequestBody(code+"test", "+49123456789", "EMAIL"))
                 .when().post(TestConfig.getRegistrationsEndpoint())
                 .then()
                 .statusCode(201);

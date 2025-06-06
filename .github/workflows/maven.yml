@@ -31,7 +31,7 @@ jobs:
 
       - name: Build and test with Maven
         run: |
-          mvn clean test \
+          mvn clean install \
             -Dmaven.test.failure.ignore=true \
             -Dallure.results.directory=target/allure-results \
             -Djava.awt.headless=true
