@@ -3,3 +3,4 @@
 /allure-results/
 /k8s/secrets.yaml
 /test-output/
+/allure-report/

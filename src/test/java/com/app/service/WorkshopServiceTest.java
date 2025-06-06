@@ -10,11 +10,13 @@ import com.app.model.entity.Workshop;
 import com.app.model.mapper.WorkshopMapper;
 import com.app.model.response.WorkshopResponse;
 import com.app.repository.WorkshopRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.testng.annotations.Test;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.mockito.*;
+import org.testng.annotations.*;
+import org.testng.ITestContext;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -39,12 +41,29 @@ class WorkshopServiceTest {
     private WorkshopResponse workshopResponse;
     private WorkshopUpdateRequest workshopUpdateRequest;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    private AutoCloseable closeable;
 
+    @BeforeClass
+    public void initMocks(ITestContext context) {
+        closeable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterClass
+    public void releaseMocks() throws Exception {
+        if (closeable != null) {
+            closeable.close();
+        }
+    }
+
+    @BeforeMethod
+    public void setUp() {
+        // Reset mocks
+        Mockito.reset(workshopRepository, workshopMapper, workshopRegistrationService);
+
+        // Setup test data
         workshop = new Workshop();
-        workshop.setCode("WS_1000");
+        workshop.setWorkshopId(Math.abs(UUID.randomUUID().hashCode()));
+        workshop.setCode("WS_"+ RandomStringUtils.randomNumeric(3));
         workshop.setName("Test Workshop");
         workshop.setDescription("Test Description");
         workshop.setStartTime(ZonedDateTime.now().plusDays(1));
@@ -87,16 +106,27 @@ class WorkshopServiceTest {
     }
 
     @Test
-    void createWorkshop_success() {
-        when(workshopRepository.existsWorkshopByCode("WS_200")).thenReturn(false);
-        when(workshopMapper.WorkshopRequestToWorkshop(any())).thenReturn(workshop);
-        when(workshopRepository.save(any())).thenReturn(workshop);
-        when(workshopMapper.WorkshopToWorkshopResponse(any())).thenReturn(workshopResponse);
+    public void createWorkshop_success() {
+        // Given
+        when(workshopRepository.existsWorkshopByCode(workshopRequest.getCode())).thenReturn(false);
+        when(workshopMapper.WorkshopRequestToWorkshop(workshopRequest)).thenReturn(workshop);
+        when(workshopRepository.save(workshop)).thenReturn(workshop);
+        when(workshopMapper.WorkshopToWorkshopResponse(workshop)).thenReturn(workshopResponse);
 
+        // When
         WorkshopRequest result = workshopService.createWorkshop(workshopRequest);
 
-        assertNotNull(result);
-        verify(workshopRepository).save(any());
+        // Then
+        assertNotNull(result, "Workshop response should not be null");
+        assertEquals(workshopResponse, result, "Returned workshop response should match the expected one");
+        
+        verify(workshopRepository, times(1)).existsWorkshopByCode(workshopRequest.getCode());
+        verify(workshopMapper, times(1)).WorkshopRequestToWorkshop(workshopRequest);
+        verify(workshopRepository, times(1)).save(workshop);
+        verify(workshopMapper, times(1)).WorkshopToWorkshopResponse(workshop);
+        
+        // Verify no more interactions
+        verifyNoMoreInteractions(workshopRepository, workshopMapper);
     }
 
     @Test

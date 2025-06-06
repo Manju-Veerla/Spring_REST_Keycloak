@@ -6,9 +6,12 @@ import com.app.model.response.RegistrationsResponse;
 import com.app.service.RegistrationService;
 import com.app.service.WorkshopRegistrationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.testng.annotations.Test;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.annotations.*;
+import org.testng.ITestContext;
+import jakarta.servlet.http.Cookie;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -22,6 +25,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -44,9 +48,29 @@ class RegistrationControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private AutoCloseable closeable;
+
+    @BeforeClass
+    public void initMocks(ITestContext context) {
+        closeable = MockitoAnnotations.openMocks(this);
+    }
+
+    @BeforeMethod
+    public void setUp() {
+        // Reset mocks before each test
+        Mockito.reset(registrationService, workshopRegistrationService);
+    }
+
+    @AfterClass
+    public void releaseMocks() throws Exception {
+        if (closeable != null) {
+            closeable.close();
+        }
+    }
+
     @Test
     @WithMockUser(roles = "ADMIN")
-    void getRegistrations_returnsList() throws Exception {
+    public void getRegistrations_returnsList() throws Exception {
         RegistrationsResponse dto = TestData.createRegistrationResponse();
         Mockito.when(registrationService.getAllRegistrations()).thenReturn(List.of(dto));
 
@@ -105,12 +129,21 @@ class RegistrationControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    void deleteRegistration_success() throws Exception {
-        mockMvc.perform(delete(REGISTRATIONS_ENDPOINT+"/1")
-                        .with(csrf()))
+    public void deleteRegistration_success() throws Exception {
+        // Given
+        int registrationId = 1;
+        String expectedResponse = "Registration deleted successfully :" + registrationId;
+        
+        // When & Then
+        mockMvc.perform(delete(REGISTRATIONS_ENDPOINT + "/" + registrationId)
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Registration deleted successfully :1")));
-        Mockito.verify(registrationService).deleteRegistration(1);
+                .andExpect(content().string(containsString(expectedResponse)));
+        
+        // Verify service interaction
+        Mockito.verify(registrationService, times(1)).deleteRegistration(registrationId);
+        Mockito.verifyNoMoreInteractions(registrationService);
     }
 
     @Test
