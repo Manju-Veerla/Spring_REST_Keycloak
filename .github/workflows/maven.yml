@@ -3,8 +3,6 @@ name: Workshop API Tests
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -21,9 +19,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     
-    - name: Create Allure results directory
-      run: mkdir -p target/allure-results
-      
+
     - name: Run tests with Allure
       run: |
         mvn clean test -Dmaven.test.failure.ignore=true site io.qameta.allure:allure-maven:serve
@@ -33,15 +29,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: allure-results
-        path: target/allure-results
+        path: allure-results
         retention-days: 30
 
-
-    - name: Generate Allure Report
-      if: always()
-      run: |
-        allure generate target/allure-results --clean -o target/allure-report
-        allure serve target/allure-results
 
     - name: Upload Allure Report
       if: always()
