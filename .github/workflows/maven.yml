@@ -28,6 +28,10 @@ jobs:
           tar -xzf allure-2.27.0.tgz
           sudo mv allure-2.27.0 /opt/allure
           sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+      - name: Start Spring Boot app
+        run: |
+          nohup mvn spring-boot:run -Dspring-boot.run.profiles=test > spring.log 2>&1 &
+          sleep 30
 
       - name: Build and test with Maven
         run: |
@@ -40,8 +44,7 @@ jobs:
       - name: Generate Allure report
         if: always()
         run: |
-          mkdir -p target/allure-results
-          allure generate target/allure-results --clean -o target/allure-report
+           allure generate target/allure-results --clean -o target/allure-report
 
       - name: Upload Allure Report
         if: always()
