@@ -30,18 +30,25 @@ jobs:
           sudo ln -s /opt/allure/bin/allure /usr/bin/allure
 
       - name: Build and test with Maven
-        run: mvn clean test -Dmaven.test.failure.ignore=true
+        run: |
+          mvn clean test \
+            -Dmaven.test.failure.ignore=true \
+            -Dallure.results.directory=target/allure-results \
+            -Djava.awt.headless=true
 
 
       - name: Generate Allure report
-        run: allure generate allure-results --clean -o allure-report
+        if: always()
+        run: |
+          mkdir -p target/allure-results
+          allure generate target/allure-results --clean -o target/allure-report
 
       - name: Upload Allure Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
-          path: allure-report
+          path: target/allure-report
           retention-days: 30
 
       - name: Upload TestNG Report
