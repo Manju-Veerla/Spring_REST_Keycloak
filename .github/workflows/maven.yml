@@ -26,10 +26,7 @@ jobs:
       
     - name: Run tests with Allure
       run: |
-        mvn clean test -Dmaven.test.failure.ignore=true \
-          -Dallure.results.directory=target/allure-results \
-          -Dallure.link.issue.pattern=https://example.com/issue/{} \
-          -Dallure.link.tms.pattern=https://example.com/tms/{}
+        mvn clean test -Dmaven.test.failure.ignore=true site io.qameta.allure:allure-maven:serve
     
     - name: Upload Allure Results
       if: always()
@@ -38,24 +35,18 @@ jobs:
         name: allure-results
         path: target/allure-results
         retention-days: 30
-    
+
+
     - name: Generate Allure Report
       if: always()
       run: |
-        mvn allure:report
-    
+        allure generate target/allure-results --clean -o target/allure-report
+        allure serve target/allure-results
+
     - name: Upload Allure Report
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: allure-report
         path: target/allure-report
-        retention-days: 30
-    
-    - name: Upload Site Report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: site-report
-        path: target/site/allure-maven-plugin
         retention-days: 30
