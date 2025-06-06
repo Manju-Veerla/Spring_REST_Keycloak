@@ -21,12 +21,15 @@ jobs:
         distribution: 'temurin'
         cache: maven
     
+    - name: Create Allure results directory
+      run: mkdir -p target/allure-results
+      
     - name: Run tests with Allure
       run: |
-        mvn clean test -Dmaven.test.failure.ignore=true
-        mvn io.qameta.allure:allure-maven:serve -Dallure.maven.allureDownloadUrl=https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.29.1/allure-commandline-2.29.1.zip
-      env:
-        ALLURE_RESULTS_DIR: target/allure-results
+        mvn clean test -Dmaven.test.failure.ignore=true \
+          -Dallure.results.directory=target/allure-results \
+          -Dallure.link.issue.pattern=https://example.com/issue/{} \
+          -Dallure.link.tms.pattern=https://example.com/tms/{}
     
     - name: Upload Allure Results
       if: always()
@@ -39,12 +42,20 @@ jobs:
     - name: Generate Allure Report
       if: always()
       run: |
-        mvn io.qameta.allure:allure-maven:report -Dallure.maven.allureDownloadUrl=https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.29.1/allure-commandline-2.29.1.zip
+        mvn allure:report
     
     - name: Upload Allure Report
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: allure-report
+        path: target/allure-report
+        retention-days: 30
+    
+    - name: Upload Site Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: site-report
         path: target/site/allure-maven-plugin
         retention-days: 30
