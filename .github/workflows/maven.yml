@@ -1,4 +1,4 @@
-name:Workshop API Tests using Rest Assured with TestNG
+name: Workshop API Tests using Rest Assured with TestNG
 
 on:
   push:
