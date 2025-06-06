@@ -20,23 +20,15 @@ jobs:
         cache: maven
     
 
-    - name: Run tests with Allure
+    - name: Run tests and generate Allure report
       run: |
-        mvn clean test -Dmaven.test.failure.ignore=true site io.qameta.allure:allure-maven:serve
+        mvn clean test -Dmaven.test.failure.ignore=true
+        mvn io.qameta.allure:allure-maven:report
     
-    - name: Upload Allure Results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: allure-results
-        path: allure-results
-        retention-days: 30
-
-
     - name: Upload Allure Report
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: allure-report
-        path: target/allure-report
+        path: target/site/allure-maven-plugin
         retention-days: 30
