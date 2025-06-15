@@ -33,7 +33,7 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/swagger-resources/**",
-            "/swagger-resources"};
+            "/swagger-resources","/actuator/health"};
     // The JWT authentication converter for converting JWT tokens to authentication objects.
     private final JwtAuthConverter jwtAuthConverter;
 
