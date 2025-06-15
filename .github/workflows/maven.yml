@@ -11,7 +11,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     services:
-      # PostgreSQL service
       postgres:
         image: postgres:latest
         env:
@@ -26,55 +25,42 @@ jobs:
           --health-timeout 5s
           --health-retries 5
       
-      keycloak:
-        image: quay.io/keycloak/keycloak:latest
-        env:
-          KC_BOOTSTRAP_ADMIN_USERNAME: admin
-          KC_BOOTSTRAP_ADMIN_PASSWORD: admin
-          KC_DB: postgres
-          KC_DB_URL: jdbc:postgresql://localhost:5432/keycloak
-          KC_DB_USERNAME: admin
-          KC_DB_PASSWORD: admin
-          KC_FEATURES: preview
-          KC_HOSTNAME_STRICT: "false"
-          KC_HTTP_PORT: 8081
-          KEYCLOAK_ADMIN: admin
-          KEYCLOAK_ADMIN_PASSWORD: admin
-          KC_HTTP_ENABLED: "true"
-          KC_PROXY: edge
-          KC_HTTP_RELATIVE_PATH: "/"
-          KC_HOSTNAME_DEBUG: "true"
-          KEYCLOAK_START_COMMAND: "start-dev"
-        ports:
-          - 8081:8081
-        # Wait for Keycloak to be ready
-        options: >-
-          --health-cmd "curl -f http://localhost:8081/realms/master || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
-          --health-start-period 60s
-        
 
     steps:
 
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Import Keycloak Realm
+      - name: Start Keycloak
         run: |
+          docker run -d \
+            --name keycloak \
+            -p 8081:8081 \
+            -e KC_BOOTSTRAP_ADMIN_USERNAME=admin \
+            -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin \
+            -e KC_DB=postgres \
+            -e KC_DB_URL=jdbc:postgresql://localhost:5432/keycloak \
+            -e KC_DB_USERNAME=keycloak \
+            -e KC_DB_PASSWORD=keycloak \
+            -e KC_FEATURES=preview \
+            -e KC_HOSTNAME_STRICT=false \
+            -e KC_HTTP_PORT=8081 \
+            -e KC_HEALTH_ENABLED=true \
+            -e KEYCLOAK_ADMIN=admin \
+            -e KEYCLOAK_ADMIN_PASSWORD=admin \
+            -e KC_HTTP_ENABLED=true \
+            -e KC_PROXY=edge \
+            -e KC_HTTP_RELATIVE_PATH=/ \
+            -v ${{ github.workspace }}/docker/keycloak/realms/workshop-realm.json:/opt/keycloak/data/import/realm.json
+            quay.io/keycloak/keycloak:latest \
+            start-dev --import-realm
+
           # Wait for Keycloak to be ready
           while ! curl -s http://localhost:8081/realms/master > /dev/null; do
             echo "Waiting for Keycloak..."
             sleep 5
           done
 
-          # Import realm using the Keycloak Admin CLI
-          curl -X POST \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $(curl -d 'client_id=admin-cli' -d 'username=admin' -d 'password=admin' -d 'grant_type=password' 'http://localhost:8081/realms/master/protocol/openid-connect/token' | jq -r '.access_token')" \
-            -d @./docker/keycloak/realms/workshop-realm.json \
-            http://localhost:8081/admin/realms
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
