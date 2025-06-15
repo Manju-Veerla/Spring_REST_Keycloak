@@ -13,16 +13,18 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_DB: workshop_db
+          POSTGRES_DB: workshop_db  # Default database for the application
           POSTGRES_USER: admin
           POSTGRES_PASSWORD: admin
+          POSTGRES_MULTIPLE_DATABASES: keycloak,workshop_db  # Create both databases
         ports:
           - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 5
+          --health-retries 30
+          --health-start-period 10s
 
     steps:
       - name: Checkout code
@@ -31,8 +33,31 @@ jobs:
       - name: Create Docker network
         run: docker network create workshop-network || true
 
-      - name: Connect Postgres to network
-        run: docker network connect workshop-network $(docker ps -q --filter ancestor=postgres:latest) || true
+      - name: Wait for PostgreSQL
+        run: |
+          echo "Waiting for PostgreSQL to be ready..."
+          for i in {1..30}; do
+            if docker exec $(docker ps -q --filter ancestor=postgres:latest) pg_isready -U admin -d keycloak; then
+              echo "PostgreSQL is ready!"
+              break
+            fi
+            echo "Waiting for PostgreSQL... (Attempt $i/30)"
+            sleep 10
+          done
+          
+          # Create databases if they don't exist
+          for db in keycloak workshop_db; do
+            docker exec $(docker ps -q --filter ancestor=postgres:latest) psql -U admin -d postgres -tc "SELECT 1 FROM pg_database WHERE datname = '$db'" | grep -q 1 || \
+            docker exec $(docker ps -q --filter ancestor=postgres:latest) psql -U admin -d postgres -c "CREATE DATABASE $db;"
+          done
+          
+          # Connect PostgreSQL to the network
+          echo "Connecting PostgreSQL to network..."
+          docker network connect workshop-network $(docker ps -q --filter ancestor=postgres:latest) || true
+          
+          # Verify connection
+          echo "Verifying database connection..."
+          docker run --rm --network workshop-network postgres:latest pg_isready -h postgres -U admin -d keycloak
 
       - name: Start Keycloak
         run: |
@@ -52,9 +77,11 @@ jobs:
             -e KEYCLOAK_ADMIN=admin \
             -e KEYCLOAK_ADMIN_PASSWORD=admin \
             -e KC_DB=postgres \
-            -e KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak \
+            -e KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak?currentSchema=public \
             -e KC_DB_USERNAME=admin \
             -e KC_DB_PASSWORD=admin \
+            -e KC_DB_SCHEMA=public \
+            -e KC_TRANSACTION_XA_ENABLED=false \
             -e KC_HOSTNAME_STRICT=false \
             -e KC_HOSTNAME_STRICT_HTTPS=false \
             -e KC_HTTP_ENABLED=true \
