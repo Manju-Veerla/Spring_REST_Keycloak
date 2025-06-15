@@ -29,6 +29,11 @@ public class RegistrationControllerTestV1 {
         }
     }
 
+@Test
+    void dummy_test() {
+    Assert.assertTrue(true);
+    }
+
     @Test
     void givenAdminAuth_whenGetRegistrations_thenReturn200() {
         given()
