@@ -41,7 +41,7 @@ jobs:
             --name keycloak \
             --network workshop-network \
             -p 8081:8080 \
-            -e KC_BOOTSTRAP_ADMIN_USERNAME =admin \
+            -e KC_BOOTSTRAP_ADMIN_USERNAME=admin \
             -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin \
             -e KEYCLOAK_ADMIN=admin \
             -e KEYCLOAK_ADMIN_PASSWORD=admin \
