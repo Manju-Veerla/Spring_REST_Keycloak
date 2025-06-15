@@ -26,32 +26,35 @@ jobs:
           --health-timeout 5s
           --health-retries 5
       
-      # Keycloak service
+      # Keycloak service with H2 in-memory database (simpler setup for CI)
       keycloak:
-        image: quay.io/keycloak/keycloak:latest
+        image: quay.io/keycloak/keycloak:22.0.5
         env:
           KEYCLOAK_ADMIN: admin
           KEYCLOAK_ADMIN_PASSWORD: admin
-          KC_DB: postgres
-          KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
-          KC_DB_USERNAME: admin
-          KC_DB_PASSWORD: admin
-          KC_HOSTNAME: localhost
-          KC_HTTP_PORT: 8081
-          KC_HTTP_ENABLED: "true"
-          KC_PROXY: "edge"
+          # Use H2 in-memory database for simplicity in CI
+          KC_DB: dev-file
+          # Disable hostname validation
           KC_HOSTNAME_STRICT: "false"
           KC_HOSTNAME_STRICT_HTTPS: "false"
           KC_HOSTNAME_STRICT_BACKCHANNEL: "false"
+          # Enable HTTP and set port
+          KC_HTTP_ENABLED: "true"
+          KC_HTTP_PORT: 8081
+          # Disable features not needed for testing
+          KC_FEATURES: "token-exchange,admin-fine-grained-authz,admin2"
+          # Disable metrics and health for simpler setup
+          KC_METRICS_ENABLED: "false"
+          KC_HEALTH_ENABLED: "true"
         ports:
           - 8081:8081
+        # Wait for Keycloak to be ready
         options: >-
           --health-cmd "curl -f http://localhost:8081/realms/master || exit 1"
-          --health-interval 30s
-          --health-timeout 10s
-          --health-retries 5
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
           --health-start-period 60s
-          --add-host=host.docker.internal:host-gateway
 
     steps:
       - name: Checkout code
