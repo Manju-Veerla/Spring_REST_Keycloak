@@ -36,18 +36,22 @@ jobs:
           KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
           KC_DB_USERNAME: admin
           KC_DB_PASSWORD: admin
-          KC_HOSTNAME_PORT: 8081
+          KC_HOSTNAME: localhost
           KC_HTTP_PORT: 8081
+          KC_HTTP_ENABLED: "true"
+          KC_PROXY: "edge"
+          KC_HOSTNAME_STRICT: "false"
+          KC_HOSTNAME_STRICT_HTTPS: "false"
+          KC_HOSTNAME_STRICT_BACKCHANNEL: "false"
         ports:
           - 8081:8081
         options: >-
           --health-cmd "curl -f http://localhost:8081/realms/master || exit 1"
           --health-interval 30s
           --health-timeout 10s
-          --health-retries 3
-          --health-start-period 30s
-        # In GitHub Actions, services automatically wait for each other based on the order they are defined
-        # The postgres service will be started before keycloak
+          --health-retries 5
+          --health-start-period 60s
+          --add-host=host.docker.internal:host-gateway
 
     steps:
       - name: Checkout code
