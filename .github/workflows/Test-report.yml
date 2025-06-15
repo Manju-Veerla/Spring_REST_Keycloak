@@ -1,0 +1,94 @@
+name: CI with Docker Compose
+
+on:
+  push:
+    branches: [main]
+
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+    # Optionally, you can define a Postgres service here if you want to use it for job steps,
+    # but since your docker-compose.yml already defines all services, it's not necessary.
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and start Docker Compose stack
+        run: |
+          docker compose up -d --build
+
+      - name: Wait for Keycloak to be healthy
+        run: |
+          for i in {1..30}; do
+            if docker logs keycloak 2>&1 | grep -q "Listening on:"; then
+              echo "Keycloak is up!"
+              exit 0
+            fi
+            echo "Waiting for Keycloak to be ready..."
+            sleep 5
+          done
+          echo "Keycloak did not start in time"
+          docker logs keycloak
+          exit 1
+
+      - name: Wait for Postgres to be healthy
+        run: |
+          for i in {1..30}; do
+            if docker exec postgres pg_isready -U admin; then
+              echo "Postgres is up!"
+              exit 0
+            fi
+            echo "Waiting for Postgres to be ready..."
+            sleep 5
+          done
+          echo "Postgres did not start in time"
+          docker logs postgres
+          exit 1
+
+      - name: Install Allure CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-jre
+          wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          tar -xzf allure-2.27.0.tgz
+          sudo mv allure-2.27.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+
+      - name: Build and test with Maven
+        run: mvn clean verify -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true -Dallure.results.directory=target/allure-results -Djava.awt.headless=true
+
+      - name: Generate Allure report
+        if: always()
+        run: allure generate target/allure-results --clean -o target/allure-report
+
+      - name: Upload Allure Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: target/allure-report
+          retention-days: 30
+
+      - name: Upload TestNG Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testng-report
+          path: target/surefire-reports
+          retention-days: 30
+
+      - name: Show logs on failure
+        if: failure()
+        run: |
+          docker compose logs
+
+      - name: Tear down Docker Compose
+        if: always()
+        run: docker compose down -v
