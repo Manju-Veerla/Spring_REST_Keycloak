@@ -2,20 +2,22 @@ name: CI with Docker Compose
 
 on:
   push:
-    branches: [main]
-
+    branches: [ main ]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    services:
-    # Optionally, you can define a Postgres service here if you want to use it for job steps,
-    # but since your docker-compose.yml already defines all services, it's not necessary.
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -23,34 +25,35 @@ jobs:
       - name: Build and start Docker Compose stack
         run: |
           docker compose up -d --build
-
-      - name: Wait for Keycloak to be healthy
-        run: |
-          for i in {1..30}; do
-            if docker logs keycloak 2>&1 | grep -q "Listening on:"; then
-              echo "Keycloak is up!"
-              exit 0
-            fi
-            echo "Waiting for Keycloak to be ready..."
-            sleep 5
-          done
-          echo "Keycloak did not start in time"
-          docker logs keycloak
-          exit 1
+          docker ps -a
 
       - name: Wait for Postgres to be healthy
+        timeout-minutes: 5
         run: |
-          for i in {1..30}; do
-            if docker exec postgres pg_isready -U admin; then
-              echo "Postgres is up!"
-              exit 0
-            fi
+          until docker exec postgres pg_isready -U admin; do
             echo "Waiting for Postgres to be ready..."
             sleep 5
           done
-          echo "Postgres did not start in time"
-          docker logs postgres
-          exit 1
+          echo "Postgres is up!"
+
+      - name: Wait for Keycloak to be healthy
+        timeout-minutes: 5
+        run: |
+          until curl -s http://localhost:8081/health > /dev/null; do
+            echo "Waiting for Keycloak to be ready..."
+            sleep 5
+          done
+          echo "Keycloak is up!"
+          docker logs keycloak
+
+      - name: Wait for application to be healthy
+        timeout-minutes: 5
+        run: |
+          until curl -s http://localhost:8080/actuator/health | grep -q "\"status\":\"UP\""; do
+            echo "Waiting for application to be ready..."
+            sleep 5
+          done
+          echo "Application is up!"
 
       - name: Install Allure CLI
         run: |
@@ -62,7 +65,12 @@ jobs:
           sudo ln -s /opt/allure/bin/allure /usr/bin/allure
 
       - name: Build and test with Maven
-        run: mvn clean verify -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true -Dallure.results.directory=target/allure-results -Djava.awt.headless=true
+        run: |
+          mvn clean verify \
+            -Dspring.profiles.active=test \
+            -Dmaven.test.failure.ignore=true \
+            -Dallure.results.directory=target/allure-results \
+            -Djava.awt.headless=true
 
       - name: Generate Allure report
         if: always()
@@ -87,7 +95,10 @@ jobs:
       - name: Show logs on failure
         if: failure()
         run: |
+          echo "=== Docker Compose Logs ==="
           docker compose logs
+          echo "=== Application Logs ==="
+          docker logs workshop-service
 
       - name: Tear down Docker Compose
         if: always()
