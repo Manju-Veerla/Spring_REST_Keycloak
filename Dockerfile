@@ -2,8 +2,8 @@
 FROM maven:3.9.7-amazoncorretto-21 AS build
 
 # Copy Maven files for dependency resolution
-COPY pom.xml ./
-COPY .mvn .mvn
+
+COPY . .
 
 # Copy application source code
 COPY src src
@@ -13,6 +13,7 @@ RUN mvn clean install -DskipTests
 
 # Stage 2: Run stage
 FROM amazoncorretto:21
+
 
 # Set working directory
 WORKDIR workshop-service
